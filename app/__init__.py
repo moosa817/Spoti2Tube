@@ -1,4 +1,4 @@
-from app.endpoints import index, errors
+from app.endpoints import index, errors,liked
 from fastapi.staticfiles import StaticFiles
 
 
@@ -21,4 +21,5 @@ class MyApp:
 
         #load endpoints
         self.app.include_router(index.index_app)
+        self.app.include_router(liked.liked_app)
 
