@@ -2,7 +2,7 @@
     "devCommand": "uvicorn run:app --host 0.0.0.0",
     "builds": [
       {
-        "src": "api/index.py",
+        "src": "run.py",
         "use": "@vercel/python"
       }
     ],
