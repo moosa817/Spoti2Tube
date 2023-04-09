@@ -18,10 +18,6 @@ class GetToken:
         request.session["refresh_token"] = self.refresh_token
         self.request = request
 
-    def print_tokens(self):
-        print(f"ACcess TOKEN : {self.access_token}")
-        return self.access_token
-
 
 class GetLikedTracks:
     def __init__(self, access_token, refresh_token, request) -> None:

@@ -43,6 +43,7 @@ async def Liked(request: Request):
         context = {"request": request, "login": True,
                    "status": "verified", "tracks": tracks}
 
+    context["callback"] = config.callback_url
     return templates.TemplateResponse("liked.html", context=context)
 
 
