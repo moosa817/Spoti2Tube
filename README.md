@@ -1,2 +1,2 @@
-# spotifree
-Flask App to download tracks/playlist even liked songs 
+# Spoti2Tube
+Fast App to download tracks/playlist even liked songs 

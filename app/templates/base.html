@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
@@ -10,7 +10,9 @@
     <link rel="stylesheet" href="/static/css/dist/style.css">
     <link rel="stylesheet" href="/static/css/dist/output.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.4/flowbite.min.css" rel="stylesheet" />
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="shortcut icon" href="/static/img/logo.png" type="image/x-icon">
 </head>
 
@@ -23,7 +25,7 @@
             <a href="/" class="flex items-center">
                 <img src="/static/img/logo.png" class="h-8 mr-3" alt="Logo" />
                 <span
-                    class="self-center text-2xl whitespace-nowrap  font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-theme1 to-theme2">Spotifree</span>
+                    class="self-center text-2xl whitespace-nowrap  font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-theme1 to-theme2">Spoti2Tube</span>
             </a>
 
             <button data-collapse-toggle="navbar-default" type="button"
@@ -67,11 +69,21 @@
 
     {%block content%}{%endblock%}
 
+
+
+    <button id="changetheme" type="button"
+        class="text-white fixed bottom-4 right-3 bg-gradient-to-r from-theme1 to-theme2 p-3 rounded"
+        title="Change Theme">
+        <i class="fa-solid " id="themer"></i>
+
+    </button>
+
 </body>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.4/flowbite.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"
     integrity="sha512-pumBsjNRGGqkPzKHndZMaAG+bir374sORyzM3uulLV14lN5LyykqNk8eEeUlUkB3U0M4FApyaHraT65ihJhDpQ=="
     crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="/static/js/style.js"></script>
+<script src="/static/js/main.js" defer></script>
 
 </html>
