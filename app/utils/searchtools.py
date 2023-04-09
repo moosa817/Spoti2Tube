@@ -15,7 +15,7 @@ class SpotifyAPI:
 
         items = results['tracks']['items']
         results = [
-            {'name': item['name'], 'url': item['external_urls']
+            {'name': item['name'], 'by': item['artists'][0]['name'], 'url': item['external_urls']
                 ['spotify'], 'img': item['album']['images'][1]['url']}
             for item in items]
 
@@ -24,10 +24,10 @@ class SpotifyAPI:
     def get_album(self, album: str):
         results = self.sp.search(q=album, type='album')
 
-        items = results['tracks']['items']
+        items = results['albums']['items']
         results = [
-            {'name': item['name'], 'url': item['external_urls']
-                ['spotify'], 'img': item['album']['images'][1]['url']}
+            {'name': item['name'], 'by': item['artists'][0]['name'], 'url': item['external_urls']
+                ['spotify'], 'img': item['images'][1]['url']}
             for item in items]
 
         return results
@@ -35,10 +35,10 @@ class SpotifyAPI:
     def get_playlist(self, playlist):
         results = self.sp.search(q=playlist, type='playlist')
 
-        items = results['tracks']['items']
+        items = results['playlists']['items']
         results = [
-            {'name': item['name'], 'url': item['external_urls']
-                ['spotify'], 'img': item['album']['images'][1]['url']}
+            {'name': item['name'], 'by':item['owner']['display_name'], 'url': item['external_urls']
+                ['spotify'], 'img': item['images'][0]["url"]}
             for item in items]
 
         return results
@@ -47,18 +47,18 @@ class SpotifyAPI:
         if "track" in link:
             item = self.sp.track(link)
 
-            results = {'name': item['name'], 'url': item['external_urls']
+            results = {'name': item['name'], 'by': item['artists'][0]['name'], 'url': item['external_urls']
                        ['spotify'], 'img': item['album']['images'][1]['url']}
             return results
 
         elif "playlist" in link:
             results = self.sp.playlist(link)
 
-            results = results["tracks"]["items"]
+            results1 = results["tracks"]["items"]
             results = [
-                {'name': item['track']['name'], 'url': item['track']['external_urls']
+                {'name': item['track']['name'], 'by': item['track']['artists'][0]['name'], 'url': item['track']['external_urls']
                  ['spotify'], 'img': item['track']['album']['images'][1]['url']}
-                for item in results]
+                for item in results1]
             return results
 
         elif "album" in link:
@@ -67,7 +67,7 @@ class SpotifyAPI:
             results = results["tracks"]["items"]
 
             results = [
-                {'name': item['name'], 'url': item['external_urls']
+                {'name': item['name'], 'by': item['artists'][0]['name'], 'url': item['external_urls']
                  ['spotify'], 'img': results1['images'][1]['url']}
                 for item in results]
             return results

@@ -46,5 +46,4 @@ class GetLikedTracks:
                        ['spotify'], 'img': track['album']['images'][1]['url']}
             finalresults.append(results)
 
-        print(finalresults)
         return finalresults
