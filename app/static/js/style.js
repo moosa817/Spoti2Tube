@@ -43,3 +43,10 @@ $('#changetheme').click(function (e) {
     }
     
 });
+
+
+// remove errors
+
+setTimeout(function() {
+    $('div[name=fadeOut]').fadeOut('fast');
+  }, 10000);
