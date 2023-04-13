@@ -2,7 +2,6 @@
 $('#liked_email').submit(function (e) {
     e.preventDefault();
     let email = $('#email-liked').val();
-    console.log(email)
 
 
 

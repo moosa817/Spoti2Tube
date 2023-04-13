@@ -2,10 +2,10 @@
 // url navbar
 let url = window.location.href
 let url_link_segment = url.substring(url.lastIndexOf('/') + 1)
-if(url_link_segment == ''){
+if (url_link_segment == '') {
     $('#index-link').addClass('bg-gradient-to-r from-theme1 to-theme2 text-white ');
 }
-else if(url_link_segment == 'liked'){
+else if (url_link_segment == 'liked') {
     $('#liked-link').addClass('bg-gradient-to-r from-theme1 to-theme2 text-white ');
 
 }
@@ -19,34 +19,80 @@ if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.match
     document.documentElement.classList.add('dark')
     $('#themer').addClass('fa-moon')
 
-  } else {
+} else {
     document.documentElement.classList.remove('dark')
     $('#themer').addClass('fa-sun')
 
 }
-  
+
 
 $('#changetheme').click(function (e) {
-    if(document.documentElement.classList.contains('dark')){
+    if (document.documentElement.classList.contains('dark')) {
         // change to light
         localStorage.theme = 'light'
         document.documentElement.classList.remove('dark')
         $('#themer').addClass('fa-sun')
         $('#themer').removeClass('fa-moon');
     }
-    else{
+    else {
         // change to dark
         localStorage.theme = 'dark'
         document.documentElement.classList.add('dark')
         $('#themer').addClass('fa-moon')
         $('#themer').removeClass('fa-sun');
     }
-    
+
+});
+
+function check_dropdown() {
+    if ($('#current_type').text() === "Tracks") {
+        $('#current_type').attr('data', 'track');
+        $('#search-dropdown').attr('placeholder', 'Enter Spotify Track Name')
+    }
+    else if ($('#current_type').text() === "Playlists") {
+        $('#current_type').attr('data', 'playlist');
+        $('#search-dropdown').attr('placeholder', 'Enter Spotify Playlist Name')
+    }
+    else if ($('#current_type').text() === "Albums") {
+        $('#current_type').attr('data', 'album');
+        $('#search-dropdown').attr('placeholder', 'Enter Spotify Album Name')
+    }
+    else {
+        $('#current_type').attr('data', 'link');
+        $('#search-dropdown').attr('placeholder', 'Enter Spotify Track/Playlist/Album Link')
+    }
+}
+check_dropdown()
+
+// search bar
+$('#dropdown button').click(function () {
+    $('#current_type').text(this.innerText)
+    $('#dropdown').toggleClass('hidden');
+    check_dropdown()
+
+
+})
+
+// Show close icon when input field has text
+$('#search-dropdown').on('input', function () {
+    if ($(this).val().length > 0) {
+
+        $('#close-icon').removeClass('hidden');
+    } else {
+        $('#close-icon').addClass('hidden');
+    }
+});
+
+// Clear input field and hide close icon when close icon is clicked
+$('#close-icon').on('click', function () {
+    $('#search-dropdown').val('').trigger('input');
+    $(this).addClass('hidden');
 });
 
 
-// remove errors
 
-setTimeout(function() {
+
+// remove alerts
+setTimeout(function () {
     $('div[name=fadeOut]').fadeOut('fast');
-  }, 10000);
+}, 10000);
