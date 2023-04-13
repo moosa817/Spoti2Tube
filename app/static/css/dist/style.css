@@ -1,6 +1,44 @@
 * {
     margin: 0;
     padding: 0;
-    /* background: linear-gradient(#1D3557,#6D597A) */
-    /* background: linear-gradient(#2A9D8F,#264653) */
+}
+
+/* loading bar */
+#loading-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 4px;
+    background-color: #ddd;
+    z-index: 1000;
+}
+
+#loading-bar .bar {
+    position: absolute;
+    top: 0px;
+    left: 0;
+    width: 0%;
+    height: 100%;
+    background: #2A9D8F;
+    animation: loading 6s ease-in-out infinite;
+    z-index: 100;
+}
+
+@keyframes loading {
+    0% {
+        width: 0%;
+    }
+
+    50% {
+        width: 50%;
+    }
+
+    75% {
+        width: 75%;
+    }
+
+    100% {
+        width: 97%;
+    }
 }

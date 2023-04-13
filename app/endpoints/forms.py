@@ -13,7 +13,7 @@ class Item(BaseModel):
 
 
 @form_app.post("/search")
-async def search(item: Item):
+async def search(request: Request, item: Item):
     spotifyapi = SpotifyAPI(config.client_id, config.client_secret)
 
     spotify_link_pattern = r'^(?:https?:\/\/)?(?:open\.|play\.|embed\.)?spotify\.com\/(track|album|artist|playlist)\/[a-zA-Z0-9]+(?:\?[a-zA-Z0-9_=&-]+)?$'
@@ -28,4 +28,4 @@ async def search(item: Item):
         elif item.type == 'track':
             return spotifyapi.get_tracks(item.search)
         else:
-            raise HTTPException(500, "Error unspported type")
+            raise HTTPException(403, "Error unspported type")
