@@ -47,15 +47,15 @@ $('#changetheme').click(function (e) {
 function check_dropdown() {
     if ($('#current_type').text() === "Tracks") {
         $('#current_type').attr('data', 'track');
-        $('#search-dropdown').attr('placeholder', 'Enter Spotify Track Name')
+        $('#search-dropdown').attr('placeholder', 'Search Spotify Track Name')
     }
     else if ($('#current_type').text() === "Playlists") {
         $('#current_type').attr('data', 'playlist');
-        $('#search-dropdown').attr('placeholder', 'Enter Spotify Playlist Name')
+        $('#search-dropdown').attr('placeholder', 'Search Spotify Playlist Name')
     }
     else if ($('#current_type').text() === "Albums") {
         $('#current_type').attr('data', 'album');
-        $('#search-dropdown').attr('placeholder', 'Enter Spotify Album Name')
+        $('#search-dropdown').attr('placeholder', 'Search Spotify Album Name')
     }
     else {
         $('#current_type').attr('data', 'link');
