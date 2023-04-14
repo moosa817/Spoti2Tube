@@ -42,3 +42,25 @@
         width: 97%;
     }
 }
+
+@media screen and (max-width: 400px) {
+    .custom-span {
+        grid-column: span 2 / span 2;
+    }
+}
+
+
+.box {
+    animation: come 1s linear 1;
+}
+
+@keyframes come {
+    0% {
+        filter: blur(3px);
+        opacity: 0;
+    }
+
+    100% {
+        transform: translateX(0%);
+    }
+}

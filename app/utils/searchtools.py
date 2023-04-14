@@ -16,7 +16,7 @@ class SpotifyAPI:
         items = results['tracks']['items']
         results = [
             {'name': item['name'], 'by': item['artists'][0]['name'], 'url': item['external_urls']
-                ['spotify'], 'img': item['album']['images'][1]['url']}
+                ['spotify'], 'img': item['album']['images'][1]['url'],'type':'Track'}
             for item in items]
 
         return results
@@ -27,7 +27,7 @@ class SpotifyAPI:
         items = results['albums']['items']
         results = [
             {'name': item['name'], 'by': item['artists'][0]['name'], 'url': item['external_urls']
-                ['spotify'], 'img': item['images'][1]['url']}
+                ['spotify'], 'img': item['images'][1]['url'],'type':'Album'}
             for item in items]
 
         return results
@@ -38,7 +38,7 @@ class SpotifyAPI:
         items = results['playlists']['items']
         results = [
             {'name': item['name'], 'by':item['owner']['display_name'], 'url': item['external_urls']
-                ['spotify'], 'img': item['images'][0]["url"]}
+                ['spotify'], 'img': item['images'][0]["url"],'type':'Playlist'}
             for item in items]
 
         return results
@@ -48,7 +48,7 @@ class SpotifyAPI:
             item = self.sp.track(link)
 
             results = {'name': item['name'], 'by': item['artists'][0]['name'], 'url': item['external_urls']
-                       ['spotify'], 'img': item['album']['images'][1]['url']}
+                       ['spotify'], 'img': item['album']['images'][1]['url'],'type':'Track'}
             return results
 
         elif "playlist" in link:
@@ -57,7 +57,7 @@ class SpotifyAPI:
             results1 = results["tracks"]["items"]
             results = [
                 {'name': item['track']['name'], 'by': item['track']['artists'][0]['name'], 'url': item['track']['external_urls']
-                 ['spotify'], 'img': item['track']['album']['images'][1]['url']}
+                 ['spotify'], 'img': item['track']['album']['images'][1]['url'],'type':'Playlist'}
                 for item in results1]
             return results
 
@@ -68,7 +68,7 @@ class SpotifyAPI:
 
             results = [
                 {'name': item['name'], 'by': item['artists'][0]['name'], 'url': item['external_urls']
-                 ['spotify'], 'img': results1['images'][1]['url']}
+                 ['spotify'], 'img': results1['images'][1]['url'],'type':'Album'}
                 for item in results]
             return results
 
