@@ -12,6 +12,10 @@ class SearchItem(BaseModel):
     type: str
 
 
+class YtSearchItem(BaseModel):
+    search: str
+    by: str
+
 
 @search_app.post("/search")
 async def search(request: Request, item: SearchItem):
@@ -31,3 +35,7 @@ async def search(request: Request, item: SearchItem):
         else:
             raise HTTPException(403, "Error unspported type")
 
+
+@search_app.post("/search_yt")
+async def SearchYT(request: Request, item: YtSearchItem):
+    pass

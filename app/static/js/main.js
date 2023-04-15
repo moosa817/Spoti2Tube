@@ -1,19 +1,17 @@
 function spotify_card(trackname, link, artist, type, img) {
     let content = `
-       <div>
-
-
+       <div class="spoti-card">
 
             <div
                 class="dark:bg-gray-950 bg-gray-300 rounded-lg p-4 m-4 grid md:grid-flow-col md:grid-cols-3 grid-flow-row ">
                 <div class="custom-span">
-                    <img class="inline-block h-20" src="${img}">
+                    <img class="inline-block h-20" src="${img}"></img>
                 </div>
 
                 <div class="flex items-center justify-between col-span-2 ">
                     <div class="mr-auto">
                         <div class="sm:text-[1rem] font-semibold ">
-                           <a href=${link}> ${trackname} </a>
+                           <a href="${link}"> ${trackname} </a>
                         </div>
 
                         <div class=" text-[10px]  dark:text-gray-400 text-right">
@@ -25,12 +23,12 @@ function spotify_card(trackname, link, artist, type, img) {
                     </div>
 
                     <div class="ml-auto">
-                        <div class="my-2 ">
+                        <div class="my-2 add" data-url="${link}" data-type="${type}"  data="${trackname} ${artist}">
                             <button class="hover:scale-110 bg-green-400 p-1 rounded-lg "><i
                                     class="fa-solid fa-plus w-4"></i>
-                                </svg></button>
+                                </button>
                         </div>
-                        <div> <button class="bg-red-600 rounded-[50%] w-6 h-6 hover:scale-110"
+                        <div class="remove"> <button class="bg-red-600 rounded-[50%] w-6 h-6 hover:scale-110"
                                 style="border-radius:60%;"><i class=" fa-solid fa-minus "></i></button>
                         </div>
 
@@ -41,7 +39,7 @@ function spotify_card(trackname, link, artist, type, img) {
 
         </div>
 `
-    $('#spotify-col').append(content);
+    $('#spotify-col').prepend(content);
 
 }
 
@@ -104,6 +102,7 @@ $(document).ready(function () {
 });
 $('#boxs').hide()
 
+// when search button clicked
 $('#search_form').submit(function (e) {
     e.preventDefault();
     let search_val = $('#search-dropdown').val();
@@ -126,12 +125,15 @@ $('#search_form').submit(function (e) {
 
                 response.forEach(element => {
                     spotify_card(element.name, element.url, element.by, element.type, element.img)
+
                 });
 
                 $('#boxs').show()
                 $('#success').show();
                 $('#mysuccess').html(`Songs Found`)
                 $('#boxs').show()
+                after_search()
+
 
 
             }
@@ -139,3 +141,43 @@ $('#search_form').submit(function (e) {
     });
 });
 
+
+// function that runs if tracks were fetched
+function after_search() {
+    $('.spoti-card .remove').click(function () {
+        let spotiCard = $(this).closest('.spoti-card');
+        spotiCard.fadeOut();
+    })
+
+
+    $('.spoti-card .add').click(function () {
+        let search_for = $(this).attr('data');
+        let type = $(this).attr('data-type');
+        let url = $(this).attr('data-url');
+        console.log(search_for)
+
+        if (type === 'Track') {
+            // search for yt url
+
+        }
+        else {
+            // playlist etc
+            $.ajax({
+                type: "POST",
+                url: "/search",
+                data: JSON.stringify({ search: url, type: 'link' }),
+                contentType: 'application/json',
+                success: function (response) {
+                    $('#loading-bar').fadeOut()
+                    if (response === undefined || response.length == 0) {
+                        console.error("Found Nothing")
+                        $('#error').show();
+                        $('#myerror').html("Nothing Found");
+                    } else {
+
+                    }
+                }
+            })
+        }
+    })
+}

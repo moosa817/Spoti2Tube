@@ -1,4 +1,4 @@
-from app.endpoints import index, errors, liked, search
+from app.routes import index, errors, liked, search
 from fastapi.staticfiles import StaticFiles
 from starlette.middleware.sessions import SessionMiddleware
 import config
