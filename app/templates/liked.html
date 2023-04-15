@@ -72,13 +72,13 @@
 
 
         {% if login and status == "verified" %}
-        {% for i in tracks %}
-        {{i}}
-        {%endfor%}
+        <div id="liked-tracks" data="{{tracks}}">
+        </div>
 
+        <div class="my-10"></div>
+        {%include 'components/card.html' %}
 
         {%endif%}
-
 
 
 

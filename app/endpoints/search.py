@@ -4,16 +4,17 @@ from app.utils.searchtools import SpotifyAPI
 import config
 from pydantic import BaseModel
 
-form_app = APIRouter()
+search_app = APIRouter()
 
 
-class Item(BaseModel):
+class SearchItem(BaseModel):
     search: str
     type: str
 
 
-@form_app.post("/search")
-async def search(request: Request, item: Item):
+
+@search_app.post("/search")
+async def search(request: Request, item: SearchItem):
     spotifyapi = SpotifyAPI(config.client_id, config.client_secret)
 
     spotify_link_pattern = r'^(?:https?:\/\/)?(?:open\.|play\.|embed\.)?spotify\.com\/(track|album|artist|playlist)\/[a-zA-Z0-9]+(?:\?[a-zA-Z0-9_=&-]+)?$'
@@ -29,3 +30,4 @@ async def search(request: Request, item: Item):
             return spotifyapi.get_tracks(item.search)
         else:
             raise HTTPException(403, "Error unspported type")
+

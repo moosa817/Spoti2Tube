@@ -1,4 +1,4 @@
-from app.endpoints import index, errors, liked, forms
+from app.endpoints import index, errors, liked, search
 from fastapi.staticfiles import StaticFiles
 from starlette.middleware.sessions import SessionMiddleware
 import config
@@ -26,4 +26,4 @@ class MyApp:
         # load endpoints
         self.app.include_router(index.index_app)
         self.app.include_router(liked.liked_app)
-        self.app.include_router(forms.form_app)
+        self.app.include_router(search.search_app)
