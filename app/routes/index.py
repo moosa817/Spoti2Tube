@@ -15,6 +15,12 @@ async def home(request: Request):
 
 
 @index_app.get("/clear")
-async def clear_session(request: Request):
-    request.session.clear()
-    return RedirectResponse("/liked")
+async def clear_session(request: Request, logout=False):
+    if logout == False or logout == 'False':
+        del request.session["access_token"]
+        del request.session["refresh_token"]
+        request.session["status"] = "verified"
+        return RedirectResponse("/liked")
+    else:
+        request.session.clear()
+        return RedirectResponse("/liked")

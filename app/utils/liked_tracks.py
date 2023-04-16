@@ -23,12 +23,23 @@ class GetLikedTracks:
     def __init__(self, access_token, refresh_token, request) -> None:
         sp = spotipy.Spotify(auth=access_token)
 
+        self.sp = sp
         try:
             self.results = sp.current_user_saved_tracks()
         except:
-            auth_manager = sp.auth_manager
-            new_token_info = auth_manager.refresh_access_token(refresh_token)
-            request.session['access_token'] = new_token_info
+            try:
+                auth_manager = sp.auth_manager
+                new_token_info = auth_manager.refresh_access_token(
+                    refresh_token)
+                request.session['access_token'] = new_token_info
+            except:
+                request.session = None
+
+    def getinfo(self):
+        user_info = self.sp.me()
+        info = {"name": user_info["display_name"], "link": user_info["external_urls"]["spotify"],"img":user_info["images"][0]["url"]}
+
+        return info
 
     def savedTracks(self):
         results = self.results
@@ -36,10 +47,15 @@ class GetLikedTracks:
         finalresults = []
         for item in results['items']:
             track = item['track']
-            track_name = track['name'] + ' ' + track['artists'][0]['name']
+            track_name = track['name']
 
-            results = {'name': track_name, 'url': track['external_urls']
-                       ['spotify'], 'img': track['album']['images'][1]['url']}
+            track_name = track_name.replace('"', '')
+            track_name = track_name.replace("'", '')
+
+            by = track['artists'][0]['name']
+
+            results = {'name': track_name, 'by': by, 'url': track['external_urls']
+                       ['spotify'], 'img': track['album']['images'][1]['url'], 'type': 'Track'}
             finalresults.append(results)
 
         return finalresults

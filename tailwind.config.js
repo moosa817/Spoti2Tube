@@ -6,9 +6,12 @@ module.exports = {
     extend: {
       colors: {
         'theme1': '#2A9D8F',
-        'theme2':'#264653'
+        'theme2': '#264653'
       },
+      screens: {
+        'xs': '400px',
+      }
     },
-  },
-  plugins: [],
+    plugins: [],
+  }
 }

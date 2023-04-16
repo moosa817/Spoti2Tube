@@ -40,8 +40,9 @@ async def Liked(request: Request):
             "access_token"), session.get("refresh_token"), request)
 
         tracks = liked_tracks.savedTracks()
+        userinfo = liked_tracks.getinfo()
         context = {"request": request, "login": True,
-                   "status": "verified", "tracks": tracks}
+                   "status": "verified", "tracks": tracks, "userinfo": userinfo}
 
     context["callback"] = config.callback_url
     return templates.TemplateResponse("liked.html", context=context)

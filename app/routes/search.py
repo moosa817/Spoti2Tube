@@ -1,20 +1,26 @@
 from fastapi import APIRouter, Request, HTTPException
 import re
 from app.utils.searchtools import SpotifyAPI
+from app.utils.GetYtLinks import yt_search
 import config
 from pydantic import BaseModel
 
-form_app = APIRouter()
+search_app = APIRouter()
 
 
-class Item(BaseModel):
+class SearchItem(BaseModel):
     search: str
     type: str
+    no: int
 
 
-@form_app.post("/search")
-async def search(request: Request, item: Item):
-    spotifyapi = SpotifyAPI(config.client_id, config.client_secret)
+class YtSearchItem(BaseModel):
+    search: list
+
+
+@search_app.post("/search")
+async def search(item: SearchItem):
+    spotifyapi = SpotifyAPI(config.client_id, config.client_secret, item.no)
 
     spotify_link_pattern = r'^(?:https?:\/\/)?(?:open\.|play\.|embed\.)?spotify\.com\/(track|album|artist|playlist)\/[a-zA-Z0-9]+(?:\?[a-zA-Z0-9_=&-]+)?$'
 
@@ -29,3 +35,17 @@ async def search(request: Request, item: Item):
             return spotifyapi.get_tracks(item.search)
         else:
             raise HTTPException(403, "Error unspported type")
+
+
+@search_app.post("/search_yt")
+async def SearchYT(item: YtSearchItem):
+    yt_info = []
+    if len(item.search) >= 200:
+        return HTTPException(403, "tOO MANY ITEMS")
+
+    for song in item.search:
+        vid, title, thumbnail, by = yt_search(song)
+        yt_info.append({"link": vid, "title": title,
+                       "thumbnail": thumbnail, "by": by, "type": "Youtube Audio"})
+
+    return yt_info
