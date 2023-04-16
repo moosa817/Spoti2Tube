@@ -1,25 +1,30 @@
-import yt_dlp
-import io
+import requests
+import re
 
 
-def download(url):
-    with yt_dlp.YoutubeDL() as ydl:
-        info = ydl.extract_info(url, download=False)
+def yt_search(search):
+    try:
+        search = search.replace(" ", "+")
 
-    title = info["title"]
-    ydl_opts = {
-        'extract-audio': True,
-        'format': "bestaudio/best",
-        'audio-format': 'mp3',
-        'outtmpl': '%(title)s.mp3',  # i don't want to store it here
-    }
+        html = requests.get(
+            "https://www.youtube.com/results?search_query="+search)
 
-    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-        ydl.download(url)
+        video_ids = re.findall(r"watch\?v=(\S{11})", html.text)
 
-        # mp3_file = io.BytesIO()  #store it something like this
+        vid = video_ids[0]
 
-    # return mp3_files
+        e = requests.get("https://www.youtube.com/watch?v="+vid)
+        titles = re.findall(r"<title>(.*?)</title>", e.text)
 
+        title = titles[0]
+        vid = "https://www.youtube.com/watch?v="+vid
 
-download("YT-URL")
+        # extract thumbnail URL from the HTML
+        thumbnails = re.findall(
+            r'"thumbnail":{"thumbnails":\[{"url":"(.*?)","width":', e.text)
+        thumbnail = thumbnails[0]
+
+        return vid, title, thumbnail
+
+    except IndexError:
+        pass

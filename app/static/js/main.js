@@ -39,7 +39,7 @@ function spotify_card(trackname, link, artist, type, img) {
 
         </div>
 `
-    $('#spotify-col').prepend(content);
+    $('#spotify-cards').prepend(content);
 
 }
 
@@ -107,13 +107,20 @@ $('#search_form').submit(function (e) {
     e.preventDefault();
     let search_val = $('#search-dropdown').val();
     let type = $('#current_type').attr('data');
-    console.log(search_val, type)
+    let no = $('#no').val()
+    if (no === '#') {
+        no = 1
+    } else {
+        no = parseInt(no);
+    }
+
+    console.log(search_val, type, no)
     $('#loading-bar').show();
 
     $.ajax({
         type: "POST",
         url: "/search",
-        data: JSON.stringify({ search: search_val, type: type }),
+        data: JSON.stringify({ search: search_val, type: type, no: no }),
         contentType: 'application/json',
         success: function (response) {
             $('#loading-bar').fadeOut()
@@ -123,7 +130,7 @@ $('#search_form').submit(function (e) {
                 $('#myerror').html("Nothing Found");
             } else {
 
-                response.forEach(element => {
+                response.reverse().forEach(element => {
                     spotify_card(element.name, element.url, element.by, element.type, element.img)
 
                 });
@@ -144,6 +151,12 @@ $('#search_form').submit(function (e) {
 
 // function that runs if tracks were fetched
 function after_search() {
+
+    $('#removeAll').click(function () {
+        $('.spoti-card').fadeOut()
+    })
+
+
     $('.spoti-card .remove').click(function () {
         let spotiCard = $(this).closest('.spoti-card');
         spotiCard.fadeOut();
@@ -157,7 +170,19 @@ function after_search() {
         console.log(search_for)
 
         if (type === 'Track') {
+            let songs = [search_for]
             // search for yt url
+            $.ajax({
+                type: "POST",
+                url: "/search_yt",
+                data: JSON.stringify({ search: songs }),
+                contentType: 'application/json',
+                success: function (response) {
+                    console.log(response)
+                }
+
+            })
+
 
         }
         else {

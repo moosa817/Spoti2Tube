@@ -4,10 +4,6 @@ import smtplib
 import config
 
 
-def validate_email():
-    pass
-
-
 def send_email(to, subject, body):
     msg = MIMEText(body)
     msg['Subject'] = subject

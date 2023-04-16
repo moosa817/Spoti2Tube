@@ -48,6 +48,7 @@ function check_dropdown() {
     if ($('#current_type').text() === "Tracks") {
         $('#current_type').attr('data', 'track');
         $('#search-dropdown').attr('placeholder', 'Search Spotify Track Name')
+        console.log($('#current_type').attr('data', 'track'))
     }
     else if ($('#current_type').text() === "Playlists") {
         $('#current_type').attr('data', 'playlist');

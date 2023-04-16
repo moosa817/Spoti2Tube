@@ -23,6 +23,7 @@ class GetLikedTracks:
     def __init__(self, access_token, refresh_token, request) -> None:
         sp = spotipy.Spotify(auth=access_token)
 
+        self.sp = sp
         try:
             self.results = sp.current_user_saved_tracks()
         except:
@@ -33,6 +34,12 @@ class GetLikedTracks:
                 request.session['access_token'] = new_token_info
             except:
                 request.session = None
+
+    def getinfo(self):
+        user_info = self.sp.me()
+        info = {"name": user_info["display_name"], "link": user_info["external_urls"]["spotify"],"img":user_info["images"][0]["url"]}
+
+        return info
 
     def savedTracks(self):
         results = self.results
