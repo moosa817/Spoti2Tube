@@ -1,7 +1,9 @@
-from fastapi import APIRouter, Request
+from functools import lru_cache
+from typing import Annotated
+from fastapi import APIRouter, Depends, Request
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import RedirectResponse
-import config
+from config import get_settings, Settings
 
 templates = Jinja2Templates(directory="app/templates")
 
@@ -9,8 +11,7 @@ index_app = APIRouter()
 
 
 @index_app.get("/")
-async def home(request: Request):
-    print(config.client_id, config.client_secret)
+async def home(request: Request, settings: Annotated[Settings, Depends(get_settings)]):
     context = {"request": request}
     return templates.TemplateResponse("home.html", context=context)
 

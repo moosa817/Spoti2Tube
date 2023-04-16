@@ -1,7 +1,7 @@
 from app.routes import index, errors, liked, search
 from fastapi.staticfiles import StaticFiles
 from starlette.middleware.sessions import SessionMiddleware
-import config
+from config import get_settings
 
 
 class MyApp:
@@ -21,7 +21,7 @@ class MyApp:
 
         # add session middleware
         self.app.add_middleware(
-            SessionMiddleware, secret_key=config.secret_key, max_age=30 * 24 * 60 * 60)
+            SessionMiddleware, secret_key=get_settings().secret_key, max_age=30 * 24 * 60 * 60)
 
         # load endpoints
         self.app.include_router(index.index_app)

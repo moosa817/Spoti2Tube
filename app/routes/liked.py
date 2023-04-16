@@ -1,14 +1,14 @@
-from typing import Optional
-from fastapi import APIRouter, Request
+from typing import Annotated, Optional
+from fastapi import APIRouter, Depends, Request
 from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
 from app.utils.liked_tracks import GetLikedTracks, GetToken
 from pymongo import MongoClient
-import config
 from app.utils.otherTools import validate_email, send_email
+from config import get_settings, Settings
 
-client = MongoClient(config.mongo_str)
+client = MongoClient(get_settings().mongo_str)
 db = client.get_database('spotifree')
 records = db.use_liked
 
@@ -22,7 +22,7 @@ liked_app = APIRouter()
 
 
 @liked_app.get("/liked")
-async def Liked(request: Request):
+async def Liked(request: Request, settings: Annotated[Settings, Depends(get_settings)]):
 
     session = request.session
     context = {"request": request}
@@ -44,12 +44,12 @@ async def Liked(request: Request):
         context = {"request": request, "login": True,
                    "status": "verified", "tracks": tracks, "userinfo": userinfo}
 
-    context["callback"] = config.callback_url
+    context["callback"] = settings.callback_url
     return templates.TemplateResponse("liked.html", context=context)
 
 
 @liked_app.post("/verify")
-async def verify(request: Request, item: EmailItem):
+async def verify(request: Request, item: EmailItem, settings: Annotated[Settings, Depends(get_settings)]):
     email = item.email
     if not validate_email(email):
         return {"success": False}
@@ -65,7 +65,7 @@ async def verify(request: Request, item: EmailItem):
     else:
         records.insert_one({"email": email, "status": "pending"})
         request.session["status"] = "pending"
-        send_email(config.email_sender, "Spotifree",
+        send_email(settings.email_sender, "Spotifree",
                    f"Add this Email to spotify liked feature {email}")
 
     return {"email": email, "status": request.session.get("status"), "success": True}

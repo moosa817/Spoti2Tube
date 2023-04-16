@@ -1,9 +1,10 @@
-from fastapi import APIRouter, Request, HTTPException
+from typing import Annotated
+from fastapi import APIRouter, Depends, HTTPException
 import re
 from app.utils.searchtools import SpotifyAPI
 from app.utils.GetYtLinks import yt_search
-import config
 from pydantic import BaseModel
+from config import Settings, get_settings
 
 search_app = APIRouter()
 
@@ -19,8 +20,10 @@ class YtSearchItem(BaseModel):
 
 
 @search_app.post("/search")
-async def search(item: SearchItem):
-    spotifyapi = SpotifyAPI(config.client_id, config.client_secret, item.no)
+async def search(item: SearchItem, settings: Annotated[Settings, Depends(get_settings)]):
+
+    spotifyapi = SpotifyAPI(
+        settings.client_id, settings.client_secret, item.no)
 
     spotify_link_pattern = r'^(?:https?:\/\/)?(?:open\.|play\.|embed\.)?spotify\.com\/(track|album|artist|playlist)\/[a-zA-Z0-9]+(?:\?[a-zA-Z0-9_=&-]+)?$'
 
