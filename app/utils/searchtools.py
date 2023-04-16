@@ -46,14 +46,14 @@ class SpotifyAPI:
 
     def get_with_link(self, link):
         if "track" in link:
-            item = self.sp.track(link, limit=self.no)
+            item = self.sp.track(link)
 
             results = {'name': item['name'], 'by': item['artists'][0]['name'], 'url': item['external_urls']
                        ['spotify'], 'img': item['album']['images'][1]['url'], 'type': 'Track'}
             return results
 
         elif "playlist" in link:
-            results = self.sp.playlist(link, limit=self.no)
+            results = self.sp.playlist(link)
 
             results1 = results["tracks"]["items"]
             results = [
@@ -63,7 +63,7 @@ class SpotifyAPI:
             return results
 
         elif "album" in link:
-            results = self.sp.album(link, limit=self.no)
+            results = self.sp.album(link)
             results1 = results
             results = results["tracks"]["items"]
 

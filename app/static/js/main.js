@@ -11,7 +11,7 @@ function spotify_card(trackname, link, artist, type, img) {
                 <div class="flex items-center justify-between col-span-2 ">
                     <div class="mr-auto">
                         <div class="sm:text-[1rem] font-semibold ">
-                           <a href="${link}"> ${trackname} </a>
+                           <a href="${link}" target="_blank"> ${trackname} </a>
                         </div>
 
                         <div class=" text-[10px]  dark:text-gray-400 text-right">
@@ -44,18 +44,18 @@ function spotify_card(trackname, link, artist, type, img) {
 }
 
 
-function yt_card(ytname, link, artist, type) {
+function yt_card(ytname, link, artist, type, img) {
     let content = `<div>
             <div
                 class="dark:bg-gray-950 bg-gray-300 rounded-lg p-4 m-4 grid md:grid-flow-col md:grid-cols-3 grid-flow-row ">
                 <div class="custom-span">
-                    <img class="inline-block h-20" src="https://flowbite.com/docs/images/blog/image-1.jpg">
+                    <img class="inline-block h-20" src="${img}">
                 </div>
 
                 <div class="flex items-center justify-between col-span-2">
                     <div class="mr-auto">
-                        <div class="text-xl font-semibold">
-                        <a href=${link}>
+                        <div class="text-[13px] font-semibold">
+                        <a href="${link}" target="_blank">
                             ${ytname}
                             </a>
                         </div>
@@ -164,6 +164,8 @@ function after_search() {
 
 
     $('.spoti-card .add').click(function () {
+        $('#loading-bar').show()
+
         let search_for = $(this).attr('data');
         let type = $(this).attr('data-type');
         let url = $(this).attr('data-url');
@@ -178,7 +180,16 @@ function after_search() {
                 data: JSON.stringify({ search: songs }),
                 contentType: 'application/json',
                 success: function (response) {
-                    console.log(response)
+                    $('#loading-bar').fadeOut()
+                    if (response === undefined || response.length == 0) {
+                        console.error("Found Nothing")
+                        $('#error').show();
+                        $('#myerror').html("Nothing Found");
+                    }
+                    else {
+                        ytinfo = response[0]
+                        yt_card(ytinfo["title"], ytinfo["link"], ytinfo['by'], ytinfo['type'], ytinfo['thumbnail'])
+                    }
                 }
 
             })
@@ -190,15 +201,38 @@ function after_search() {
             $.ajax({
                 type: "POST",
                 url: "/search",
-                data: JSON.stringify({ search: url, type: 'link' }),
+                data: JSON.stringify({ search: url, type: 'link', 'no': 1 }),
                 contentType: 'application/json',
                 success: function (response) {
-                    $('#loading-bar').fadeOut()
                     if (response === undefined || response.length == 0) {
                         console.error("Found Nothing")
                         $('#error').show();
                         $('#myerror').html("Nothing Found");
                     } else {
+                        track_names = []
+                        response.forEach(item => {
+                            track_names.push(item.name + ' ' + item.by)
+                        });
+                        $.ajax({
+                            type: "POST",
+                            url: "/search_yt",
+                            data: JSON.stringify({ search: track_names }),
+                            contentType: 'application/json',
+                            success: function (response) {
+                                $('#loading-bar').fadeOut()
+                                if (response === undefined || response.length == 0) {
+                                    console.error("Found Nothing")
+                                    $('#error').show();
+                                    $('#myerror').html("Nothing Found");
+                                }
+                                else {
+                                    response.forEach(element => {
+                                        yt_card(element.title, element.url, element.by, element.type, element.thumbnail)
+                                    });
+                                }
+                            }
+
+                        })
 
                     }
                 }

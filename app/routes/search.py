@@ -40,9 +40,12 @@ async def search(item: SearchItem):
 @search_app.post("/search_yt")
 async def SearchYT(item: YtSearchItem):
     yt_info = []
+    if len(item.search) >= 200:
+        return HTTPException(403, "tOO MANY ITEMS")
 
     for song in item.search:
-        vid, title, thumbnail = yt_search(song)
-        yt_info.append({"link": vid, "title": title, "thumbnail": thumbnail})
+        vid, title, thumbnail, by = yt_search(song)
+        yt_info.append({"link": vid, "title": title,
+                       "thumbnail": thumbnail, "by": by, "type": "Youtube Audio"})
 
     return yt_info

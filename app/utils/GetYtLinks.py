@@ -24,7 +24,11 @@ def yt_search(search):
             r'"thumbnail":{"thumbnails":\[{"url":"(.*?)","width":', e.text)
         thumbnail = thumbnails[0]
 
-        return vid, title, thumbnail
+        channel_names = re.findall(
+            r'"ownerChannelName":"(.*?)",', e.text)
+        channel_name = channel_names[0]
+        title = title.replace(" - YouTube", "")
+        return vid, title, thumbnail, channel_name
 
     except IndexError:
         pass
