@@ -1,34 +1,29 @@
-import requests
-import re
+from pytube import Search, YouTube
+from concurrent.futures import ThreadPoolExecutor
 
 
-def yt_search(search):
+def search_for_short_video(name):
     try:
-        search = search.replace(" ", "+")
+        search_results = Search(name)
+        search_results = search_results.results
+        first_video = search_results[0]
+        if int(first_video.length) <= 600:
+            title = first_video.title
+            thumbnail_url = first_video.thumbnail_url
+            channel_name = first_video.author
+            video_url = first_video.watch_url
 
-        html = requests.get(
-            "https://www.youtube.com/results?search_query="+search)
-
-        video_ids = re.findall(r"watch\?v=(\S{11})", html.text)
-
-        vid = video_ids[0]
-
-        e = requests.get("https://www.youtube.com/watch?v="+vid)
-        titles = re.findall(r"<title>(.*?)</title>", e.text)
-
-        title = titles[0]
-        vid = "https://www.youtube.com/watch?v="+vid
-
-        # extract thumbnail URL from the HTML
-        thumbnails = re.findall(
-            r'"thumbnail":{"thumbnails":\[{"url":"(.*?)","width":', e.text)
-        thumbnail = thumbnails[0]
-
-        channel_names = re.findall(
-            r'"ownerChannelName":"(.*?)",', e.text)
-        channel_name = channel_names[0]
-        title = title.replace(" - YouTube", "")
-        return vid, title, thumbnail, channel_name
-
-    except IndexError:
+        return {"link": video_url, "title": title,
+                "thumbnail": thumbnail_url, "by": channel_name, "type": "Youtube Video"}
+    except:
         pass
+    return None
+
+
+def search_for_short_videos(names):
+    with ThreadPoolExecutor() as executor:
+        results = list(executor.map(search_for_short_video, names))
+
+    if results is None:
+        return []
+    return results

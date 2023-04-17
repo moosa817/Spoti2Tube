@@ -2,7 +2,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException
 import re
 from app.utils.searchtools import SpotifyAPI
-from app.utils.GetYtLinks import yt_search
+from app.utils.GetYtLinks import search_for_short_videos
 from pydantic import BaseModel
 from config import Settings, get_settings
 
@@ -42,13 +42,9 @@ async def search(item: SearchItem, settings: Annotated[Settings, Depends(get_set
 
 @search_app.post("/search_yt")
 async def SearchYT(item: YtSearchItem):
-    yt_info = []
     if len(item.search) >= 200:
         return HTTPException(403, "tOO MANY ITEMS")
 
-    for song in item.search:
-        vid, title, thumbnail, by = yt_search(song)
-        yt_info.append({"link": vid, "title": title,
-                       "thumbnail": thumbnail, "by": by, "type": "Youtube Audio"})
-
+    # vid, title, thumbnail, by = yt_search(song)
+    yt_info = search_for_short_videos(item.search)
     return yt_info
