@@ -8,3 +8,7 @@ package.json
 package-lock.json
 problems.txt
 test/
+poetry.lock
+pyproject.toml
+replit.nix
+venv/
