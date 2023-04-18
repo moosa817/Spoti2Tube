@@ -226,6 +226,7 @@ function after_search() {
                                     $('#myerror').html("Nothing Found");
                                 }
                                 else {
+                                    console.log(response)
                                     response.forEach(element => {
                                         yt_card(element.title, element.url, element.by, element.type, element.thumbnail)
                                     });

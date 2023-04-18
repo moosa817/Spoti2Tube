@@ -13,8 +13,13 @@ def search_for_short_video(name):
             channel_name = first_video.author
             video_url = first_video.watch_url
 
-        return {"link": video_url, "title": title,
-                "thumbnail": thumbnail_url, "by": channel_name, "type": "Youtube Video"}
+        return {
+            "link": video_url,
+            "title": title,
+            "thumbnail": thumbnail_url,
+            "by": channel_name,
+            "type": "Youtube Video"
+        }
     except:
         pass
     return None
@@ -26,4 +31,7 @@ def search_for_short_videos(names):
 
     if results is None:
         return []
+
+    results = [i for i in results if i is not None]
+
     return results
