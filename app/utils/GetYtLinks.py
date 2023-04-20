@@ -1,33 +1,37 @@
-from pytube import Search, YouTube
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ProcessPoolExecutor
+from youtube_search import YoutubeSearch
+import json
 
 
-def search_for_short_video(name):
-    try:
-        search_results = Search(name)
-        search_results = search_results.results
-        first_video = search_results[0]
-        if int(first_video.length) <= 600:
-            title = first_video.title
-            thumbnail_url = first_video.thumbnail_url
-            channel_name = first_video.author
-            video_url = first_video.watch_url
+def yt_search(search):
+    results = YoutubeSearch(search, max_results=1).to_json()
 
-        return {
-            "link": video_url,
-            "title": title,
-            "thumbnail": thumbnail_url,
-            "by": channel_name,
-            "type": "Youtube Video"
-        }
-    except:
-        pass
-    return None
+    results = json.loads(results)
+    vid = results["videos"][0]
+    vid_id = vid["id"]
+    url = f"https://www.youtube.com/watch?v={vid_id}"
+
+    thumbnail = thumbnail = f"https://img.youtube.com/vi/{vid_id}/maxresdefault.jpg"
+    channel = vid["channel"]
+    title = vid["title"]
+
+    duration = vid["duration"]
+    minutes, _ = duration.split(":")
+    if int(minutes) >= 8:
+        return None
+
+    return {
+        "link": url,
+        "title": title,
+        "thumbnail": thumbnail,
+        "by": channel,
+        "type": "Youtube Video"
+    }
 
 
 def search_for_short_videos(names):
-    with ThreadPoolExecutor() as executor:
-        results = list(executor.map(search_for_short_video, names))
+    with ProcessPoolExecutor() as executor:
+        results = list(executor.map(yt_search, names))
 
     if results is None:
         return []
@@ -35,3 +39,6 @@ def search_for_short_videos(names):
     results = [i for i in results if i is not None]
 
     return results
+
+
+# search youtube url ?

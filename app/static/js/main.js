@@ -1,111 +1,119 @@
-function spotify_card(trackname, link, artist, type, img) {
-    let content = `
-       <div class="spoti-card">
 
-            <div
-                class="dark:bg-gray-950 bg-gray-300 rounded-lg p-4 m-4 grid md:grid-flow-col md:grid-cols-3 grid-flow-row ">
-                <div class="custom-span">
-                    <img class="inline-block h-20" src="${img}"></img>
-                </div>
-
-                <div class="flex items-center justify-between col-span-2 ">
-                    <div class="mr-auto">
-                        <div class="sm:text-[1rem] font-semibold ">
-                           <a href="${link}" target="_blank"> ${trackname} </a>
-                        </div>
-
-                        <div class=" text-[10px]  dark:text-gray-400 text-right">
-                            By: ${artist}
-                        </div>
-                        <div class=" text-[10px]  dark:text-gray-400 text-right">
-                            Type: ${type}
-                        </div>
-                    </div>
-
-                    <div class="ml-auto">
-                        <div class="my-2 add" data-url="${link}" data-type="${type}"  data="${trackname} ${artist}">
-                            <button class="hover:scale-110 bg-green-400 p-1 rounded-lg "><i
-                                    class="fa-solid fa-plus w-4"></i>
-                                </button>
-                        </div>
-                        <div class="remove"> <button class="bg-red-600 rounded-[50%] w-6 h-6 hover:scale-110"
-                                style="border-radius:60%;"><i class=" fa-solid fa-minus "></i></button>
-                        </div>
+let crop_track_lengths;
+let track_lengths;
+let tracks_sum;
 
 
-                    </div>
-                </div>
-            </div>
+let search_yt_items = [];
 
-        </div>
-`
-    $('#spotify-cards').prepend(content);
+let tracks_name = [];
+let all_artists = [];
+
+
+
+// checks stuff and adds yt-card (not the card itself)
+function addYTCard(type, search_for, url) {
+
+    console.log("running addYTCard func")
+    if (search_yt_items.includes(search_for)) {
+        $('#error').show();
+        $('#myerror').html("Already Added");
+    }
+    else {
+
+        $('#loader').show()
+        $('#loader-txt').text("Adding Your Tracks, this might take upto a minute")
+        search_yt_items.push(search_for)
+        if (type === 'Track') {
+            let songs = [search_for]
+            // search for yt url
+            $.ajax({
+                type: "POST",
+                url: "/search_yt",
+                data: JSON.stringify({ search: songs }),
+                contentType: 'application/json',
+                success: function (response) {
+                    $('#loader').fadeOut()
+                    if (response === undefined || response.length == 0) {
+                        console.error("Found Nothing")
+                        $('#error').show();
+                        $('#myerror').html("Nothing Found");
+                    }
+                    else {
+                        let track = response[0]
+                        // console.log()
+
+                        yt_card(track.link, track.title, track.by, track.thumbnail, track.type)
+                    }
+                }
+
+            })
+
+
+        }
+        else {
+            // playlist etc
+            console.log(url)
+            $.ajax({
+                type: "POST",
+                url: "/search",
+                data: JSON.stringify({ search: url, type: 'link', 'no': 1 }),
+                contentType: 'application/json',
+                success: function (response) {
+                    if (response === undefined || response.length == 0) {
+                        console.error("Found Nothing")
+                        $('#error').show();
+                        $('#myerror').html("Nothing Found");
+                    } else {
+                        console.log(response)
+                        let track_names = []
+                        response.forEach(item => {
+                            track_names.push(item.name + ' ' + item.by)
+                        });
+                        console.log("searching playlist ")
+                        $.ajax({
+                            type: "POST",
+                            url: "/search_yt",
+                            data: JSON.stringify({ search: track_names }),
+                            contentType: 'application/json',
+                            success: function (response) {
+
+
+
+
+                                if (response === undefined || response.length == 0) {
+                                    console.error("Found Nothing")
+                                    $('#error').show();
+                                    $('#myerror').html("Nothing Found");
+                                }
+                                else {
+                                    $('#loader').fadeOut()
+                                    console.log(response)
+                                    response.forEach(element => {
+
+
+                                        yt_card(element.link, element.title, element.by, element.thumbnail, element.type)
+                                    });
+                                }
+                            }
+
+                        })
+
+                    }
+                }
+            })
+        }
+    }
 
 }
 
 
-function yt_card(ytname, link, artist, type, img) {
-    let content = `<div>
-            <div
-                class="dark:bg-gray-950 bg-gray-300 rounded-lg p-4 m-4 grid md:grid-flow-col md:grid-cols-3 grid-flow-row ">
-                <div class="custom-span">
-                    <img class="inline-block h-20" src="${img}">
-                </div>
 
-                <div class="flex items-center justify-between col-span-2">
-                    <div class="mr-auto">
-                        <div class="text-[13px] font-semibold">
-                        <a href="${link}" target="_blank">
-                            ${ytname}
-                            </a>
-                        </div>
-
-                        <div class=" text-[10px] dark:text-gray-400 text-right">
-                            By: ${artist}
-                        </div>
-                        <div class=" text-[10px] dark:text-gray-400 text-right">
-                            Type: ${type}
-                        </div>
-                    </div>
-
-                    <div class="ml-auto">
-                        <div class="my-2 ">
-                            <button class="hover:scale-110 bg-green-400 p-1 rounded-lg "><svg class="h-6 text-white"
-                                    viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <g id="Interface / Download">
-                                        <path class="stroke-black dark:stroke-white" id="Vector"
-                                            d="M6 21H18M12 3V17M12 17L17 12M12 17L7 12" stroke-width="2"
-                                            stroke-linecap="round" stroke-linejoin="round" />
-                                    </g>
-                                </svg></button>
-                        </div>
-                        <div> <button class="bg-red-600 rounded-[50%] w-6 ml-1 h-6 hover:scale-110"
-                                style="border-radius:60%;"><i class=" fa-solid fa-minus "></i></button>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-        </div>
-
-`
-    $('#yt-col').append(content);
-
-}
-// yt_card()
-
-
-
-
-$(document).ready(function () {
-    $('#loading-bar').fadeOut()
-});
-$('#boxs').hide()
 
 // when search button clicked
 $('#search_form').submit(function (e) {
     e.preventDefault();
-    let search_val = $('#search-dropdown').val();
+    let search_val = $('#search-dropdown').val(); //main search button input
     let type = $('#current_type').attr('data');
     let no = $('#no').val()
     if (no === '#') {
@@ -114,7 +122,7 @@ $('#search_form').submit(function (e) {
         no = parseInt(no);
     }
 
-    console.log(search_val, type, no)
+    console.log(search_val, tracks_name)
     $('#loading-bar').show();
 
     $.ajax({
@@ -131,13 +139,23 @@ $('#search_form').submit(function (e) {
             } else {
 
                 response.reverse().forEach(element => {
-                    spotify_card(element.name, element.url, element.by, element.type, element.img)
+                    if (tracks_name.includes(element.name)) {
+                        $('#error').show();
+                        $('#myerror').html("Already Added");
+                    }
+                    else {
+                        $('#success').show();
+                        $('#mysuccess').html(`Songs Found`)
 
+
+                        tracks_name.push(element.name)
+                        all_artists.push(element.by)
+
+                        spotify_card(element.name, element.url, element.by, element.type, element.img, element.length)
+
+                    }
                 });
 
-                $('#boxs').show()
-                $('#success').show();
-                $('#mysuccess').html(`Songs Found`)
                 $('#boxs').show()
                 after_search()
 
@@ -147,7 +165,6 @@ $('#search_form').submit(function (e) {
         },
     });
 });
-
 
 // function that runs if tracks were fetched
 function after_search() {
@@ -164,80 +181,72 @@ function after_search() {
 
 
     $('.spoti-card .add').click(function () {
-        $('#loading-bar').show()
+        console.log($('.yt-card').length)
 
         let search_for = $(this).attr('data');
         let type = $(this).attr('data-type');
         let url = $(this).attr('data-url');
-        console.log(search_for)
+        let item_length = $(this).attr('data-length');
 
-        if (type === 'Track') {
-            let songs = [search_for]
-            // search for yt url
-            $.ajax({
-                type: "POST",
-                url: "/search_yt",
-                data: JSON.stringify({ search: songs }),
-                contentType: 'application/json',
-                success: function (response) {
-                    $('#loading-bar').fadeOut()
-                    if (response === undefined || response.length == 0) {
-                        console.error("Found Nothing")
-                        $('#error').show();
-                        $('#myerror').html("Nothing Found");
-                    }
-                    else {
-                        ytinfo = response[0]
-                        yt_card(ytinfo["title"], ytinfo["link"], ytinfo['by'], ytinfo['type'], ytinfo['thumbnail'])
-                    }
-                }
+        addYTCard(type, search_for, url)
 
-            })
+        console.log(search_for, item_length)
 
-
-        }
-        else {
-            // playlist etc
-            $.ajax({
-                type: "POST",
-                url: "/search",
-                data: JSON.stringify({ search: url, type: 'link', 'no': 1 }),
-                contentType: 'application/json',
-                success: function (response) {
-                    if (response === undefined || response.length == 0) {
-                        console.error("Found Nothing")
-                        $('#error').show();
-                        $('#myerror').html("Nothing Found");
-                    } else {
-                        track_names = []
-                        response.forEach(item => {
-                            track_names.push(item.name + ' ' + item.by)
-                        });
-                        $.ajax({
-                            type: "POST",
-                            url: "/search_yt",
-                            data: JSON.stringify({ search: track_names }),
-                            contentType: 'application/json',
-                            success: function (response) {
-                                $('#loading-bar').fadeOut()
-                                if (response === undefined || response.length == 0) {
-                                    console.error("Found Nothing")
-                                    $('#error').show();
-                                    $('#myerror').html("Nothing Found");
-                                }
-                                else {
-                                    console.log(response)
-                                    response.forEach(element => {
-                                        yt_card(element.title, element.url, element.by, element.type, element.thumbnail)
-                                    });
-                                }
-                            }
-
-                        })
-
-                    }
-                }
-            })
-        }
     })
+
+
+    $('#add-all').click(function () {
+        let names = []
+        let lengths = []
+        let a = 0
+        $('#modal-html').html('')
+        $('.spoti-card').each(function () {
+            a += 1
+            let dataLength = $(this).data('length');
+            let name = $(this).data('name');
+
+            AddModal(a, name, dataLength)
+
+            names.push(name)
+            lengths.push(dataLength)
+        });
+        $('#ending-index').val(lengths.length)
+        track_lengths = lengths
+
+
+        tracks_sum = lengths.reduce(function (a, b) {
+            return a + b;
+        }, 0);
+
+        $('#tracks-sum').text(tracks_sum)
+    })
+
+
+    // when the index thingy changes from add all modal
+    $('#starting-index, #ending-index').on('change', function () {
+        var value = $(this).val();
+        console.log('Input changed to: ' + value);
+
+        let starting_index = $('#starting-index').val()
+        let ending_index = $('#ending-index').val()
+        console.log(starting_index, ending_index)
+
+        crop_track_lengths = track_lengths.slice(starting_index - 1, ending_index)
+
+        tracks_sum = crop_track_lengths.reduce(function (a, b) {
+            return a + b;
+        }, 0);
+
+        console.log(crop_track_lengths)
+        $('#tracks-sum').text(tracks_sum)
+    });
+
+    // add All button inside the modal 
+    $('#add-all-main').click(function () {
+        let tracks_sum_int = parseInt($('#tracks-sum').text())
+        console.log(tracks_sum_int, tracks_name, all_artists)
+    })
+
+
+
 }

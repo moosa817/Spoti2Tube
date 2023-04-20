@@ -20,10 +20,11 @@ class YtSearchItem(BaseModel):
 
 
 @search_app.post("/search")
-async def search(item: SearchItem, settings: Annotated[Settings, Depends(get_settings)]):
+async def search(item: SearchItem, settings: Annotated[Settings,
+                                                       Depends(get_settings)]):
 
-    spotifyapi = SpotifyAPI(
-        settings.client_id, settings.client_secret, item.no)
+    spotifyapi = SpotifyAPI(settings.client_id, settings.client_secret,
+                            item.no)
 
     spotify_link_pattern = r'^(?:https?:\/\/)?(?:open\.|play\.|embed\.)?spotify\.com\/(track|album|artist|playlist)\/[a-zA-Z0-9]+(?:\?[a-zA-Z0-9_=&-]+)?$'
 
@@ -42,7 +43,7 @@ async def search(item: SearchItem, settings: Annotated[Settings, Depends(get_set
 
 @search_app.post("/search_yt")
 async def SearchYT(item: YtSearchItem):
-    if len(item.search) >= 200:
+    if len(item.search) >= 100:
         return HTTPException(403, "tOO MANY ITEMS")
 
     # vid, title, thumbnail, by = yt_search(song)

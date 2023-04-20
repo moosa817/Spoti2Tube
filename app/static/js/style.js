@@ -1,3 +1,9 @@
+$(document).ready(function () {
+    $('#loading-bar').fadeOut()
+});
+$('#loader').hide()
+$('#boxs').hide()
+
 
 // url navbar
 let url = window.location.href
@@ -92,8 +98,13 @@ $('#close-icon').on('click', function () {
 
 
 
+$('.hide-alert').click(function () {
+    $(this).hide()
+})
 
-// remove alerts
-setTimeout(function () {
-    $('div[name=fadeOut]').fadeOut('fast');
-}, 10000);
+
+function removeFadeOut() {
+    $('div[name=fadeOut]').delay(8000).fadeOut('fast');
+}
+
+setInterval(removeFadeOut, 1000);
