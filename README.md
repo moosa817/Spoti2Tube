@@ -1,8 +1,8 @@
-# Spoti2Tube
+# Spotifree
 Fast Api App to download tracks/playlist even liked songs 
 
 Website Live Demo At 
-https://spoti2tube.vercel.app/
+http://spotifree.moosa817.repl.co/
 
 <hr>
 <h2>how to run this app</h2>

@@ -157,96 +157,99 @@ $('#search_form').submit(function (e) {
                 });
 
                 $('#boxs').show()
-                after_search()
-
-
-
             }
         },
     });
 });
 
-// function that runs if tracks were fetched
-function after_search() {
 
-    $('#removeAll').click(function () {
-        $('.spoti-card').fadeOut()
-    })
+//remove btn on spoti card
+$('body').on('click', '.remove', function () {
 
+    let spotiCard = $(this).closest('.spoti-card');
+    spotiCard.fadeOut();
+})
 
-    $('.spoti-card .remove').click(function () {
-        let spotiCard = $(this).closest('.spoti-card');
-        spotiCard.fadeOut();
-    })
+//add btn on spoti card
+$('body').on('click', '.add', function () {
+    console.log($('.yt-card').length)
 
+    let search_for = $(this).attr('data');
+    let type = $(this).attr('data-type');
+    let url = $(this).attr('data-url');
+    let item_length = $(this).attr('data-length');
 
-    $('.spoti-card .add').click(function () {
-        console.log($('.yt-card').length)
+    addYTCard(type, search_for, url)
 
-        let search_for = $(this).attr('data');
-        let type = $(this).attr('data-type');
-        let url = $(this).attr('data-url');
-        let item_length = $(this).attr('data-length');
-
-        addYTCard(type, search_for, url)
-
-        console.log(search_for, item_length)
-
-    })
+    console.log(search_for, item_length)
+})
 
 
-    $('#add-all').click(function () {
-        let names = []
-        let lengths = []
-        let a = 0
-        $('#modal-html').html('')
-        $('.spoti-card').each(function () {
-            a += 1
-            let dataLength = $(this).data('length');
-            let name = $(this).data('name');
-
-            AddModal(a, name, dataLength)
-
-            names.push(name)
-            lengths.push(dataLength)
-        });
-        $('#ending-index').val(lengths.length)
-        track_lengths = lengths
 
 
-        tracks_sum = lengths.reduce(function (a, b) {
-            return a + b;
-        }, 0);
 
-        $('#tracks-sum').text(tracks_sum)
-    })
+// add All button inside the modal 
+$('#add-all-main').click(function () {
+    let tracks_sum_int = parseInt($('#tracks-sum').text())
+    console.log(tracks_sum_int, tracks_name, all_artists)
+})
 
 
-    // when the index thingy changes from add all modal
-    $('#starting-index, #ending-index').on('change', function () {
-        var value = $(this).val();
-        console.log('Input changed to: ' + value);
 
-        let starting_index = $('#starting-index').val()
-        let ending_index = $('#ending-index').val()
-        console.log(starting_index, ending_index)
 
-        crop_track_lengths = track_lengths.slice(starting_index - 1, ending_index)
+// when the index thingy changes from add all modal
+$('#starting-index, #ending-index').on('change', function () {
+    var value = $(this).val();
+    console.log('Input changed to: ' + value);
 
-        tracks_sum = crop_track_lengths.reduce(function (a, b) {
-            return a + b;
-        }, 0);
+    let starting_index = $('#starting-index').val()
+    let ending_index = $('#ending-index').val()
+    console.log(starting_index, ending_index)
 
-        console.log(crop_track_lengths)
-        $('#tracks-sum').text(tracks_sum)
+    crop_track_lengths = track_lengths.slice(starting_index - 1, ending_index)
+
+    tracks_sum = crop_track_lengths.reduce(function (a, b) {
+        return a + b;
+    }, 0);
+
+    console.log(crop_track_lengths)
+    $('#tracks-sum').text(tracks_sum)
+});
+
+
+
+
+
+
+
+$('#removeAll').click(function () {
+    $('.spoti-card').fadeOut()
+})
+
+
+$('#add-all').click(function () {
+    console.log("world hunger fixed")
+    let names = []
+    let lengths = []
+    let a = 0
+    $('#modal-html').html('')
+    $('.spoti-card').each(function () {
+        a += 1
+        let dataLength = $(this).data('length');
+        let name = $(this).data('name');
+
+        AddModal(a, name, dataLength)
+
+        names.push(name)
+        lengths.push(dataLength)
     });
-
-    // add All button inside the modal 
-    $('#add-all-main').click(function () {
-        let tracks_sum_int = parseInt($('#tracks-sum').text())
-        console.log(tracks_sum_int, tracks_name, all_artists)
-    })
+    $('#ending-index').val(lengths.length)
+    track_lengths = lengths
 
 
+    tracks_sum = lengths.reduce(function (a, b) {
+        return a + b;
+    }, 0);
 
-}
+    $('#tracks-sum').text(tracks_sum)
+})
