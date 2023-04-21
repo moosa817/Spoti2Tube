@@ -83,7 +83,6 @@ $('#liked_email').submit(function (e) {
 });
 
 let tracks = $('#liked-tracks').attr('data');
-
 if (tracks !== undefined) {
     $('#boxs').show()
     tracks = tracks.replaceAll("'", '"');
@@ -92,10 +91,18 @@ if (tracks !== undefined) {
 
 
     tracks.forEach(track => {
-        spotify_card(track.name, track.url, track.by, track.type, track.img)
+
+
+
+        tracks_name.push(track.name)
+        all_artists.push(track.by)
+        urls.push(track.url)
+        types.push(track.type)
+
+
+        spotify_card(track.name, track.url, track.by, track.type, track.img, 1)
 
     });
-    after_search()
 
 
 }

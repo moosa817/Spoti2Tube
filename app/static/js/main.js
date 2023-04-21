@@ -1,6 +1,15 @@
+/*
+storing values in these values then set them equal to croped ones 
+then croped ones change when index's are select in add all button
+item limiters set how many youtube videos can be added at a time
+search_yt_items has a list of all the items that been searched
+
+Main.js contains all the main code some functions used here described in func.js 
+style.js contains all the things related to style
+*/
 
 let tracks_sum;
-const item_limiter = 30;
+const item_limiter = 20;
 
 let search_yt_items = [];
 
@@ -15,22 +24,22 @@ let crop_track_names = [];
 let crop_all_artists = [];
 let crop_types = [];
 let crop_urls = [];
+
+
+let liked = false;
 // checks stuff and adds yt-card (not the card itself)
-function addYTCard(type, search_for, url, from_add_all = false) {
+function addYTCard(type, search_for, url, from_add_all = false, liked = false) {
     if (search_yt_items.includes(search_for)) {
         $('#error').show();
         $('#myerror').html("Already Added");
     }
     else {
-        search_yt_items.push(search_for)
-        if (type === 'Track') {
-            let songs = [search_for]
-            // search for yt url
-            if (from_add_all) { $('#loader2').show() }
+        if (liked) {
+            console.log("adding all from liked lez go")
             $.ajax({
                 type: "POST",
                 url: "/search_yt",
-                data: JSON.stringify({ search: songs }),
+                data: JSON.stringify({ search: search_for }),
                 contentType: 'application/json',
                 success: function (response) {
                     $('#loader2').fadeOut()
@@ -41,74 +50,110 @@ function addYTCard(type, search_for, url, from_add_all = false) {
                         $('#myerror').html("Nothing Found");
                     }
                     else {
-                        let track = response[0]
-                        // console.log()
-
-                        yt_card(track.link, track.title, track.by, track.thumbnail, track.type, search_for)
+                        let counter = 0
+                        response.forEach(track => {
+                            counter += 1
+                            yt_card(track.link, track.title, track.by, track.thumbnail, track.type, search_for[counter])
+                        })
                     }
                 }
-
             })
 
 
-        }
-        else {
-            // playlist etc
-            console.log(url)
-            if (url != undefined) {
-                console.log({ search: url, type: 'link', 'no': 1 })
+
+        } else {
+
+
+            search_yt_items.push(search_for)
+            if (type === 'Track') {
+                let songs = [search_for]
+                // search for yt url
                 if (from_add_all) { $('#loader2').show() }
                 $.ajax({
                     type: "POST",
-                    url: "/search",
-                    data: JSON.stringify({ search: url, type: 'link', 'no': 1 }),
+                    url: "/search_yt",
+                    data: JSON.stringify({ search: songs }),
                     contentType: 'application/json',
                     success: function (response) {
+                        $('#loader2').fadeOut()
+                        $('#loader').fadeOut()
                         if (response === undefined || response.length == 0) {
                             console.error("Found Nothing")
                             $('#error').show();
                             $('#myerror').html("Nothing Found");
-                        } else {
-                            console.log(response)
-                            let track_names = []
-                            response.forEach(item => {
-                                track_names.push(item.name + ' ' + item.by)
-                            });
-                            // console.log("searching playlist ")
-                            if (from_add_all) { $('#loader2').show() }
-                            $.ajax({
-                                type: "POST",
-                                url: "/search_yt",
-                                data: JSON.stringify({ search: track_names }),
-                                contentType: 'application/json',
-                                success: function (response) {
+                        }
+                        else {
+                            let track = response[0]
+                            // console.log()
+                            response.forEach(track => {
 
-
-
-
-                                    if (response === undefined || response.length == 0) {
-                                        console.error("Found Nothing")
-                                        $('#error').show();
-                                        $('#myerror').html("Nothing Found");
-                                    }
-                                    else {
-                                        $('#loader').fadeOut()
-                                        $('#loader2').fadeOut()
-
-                                        // console.log(response)
-                                        response.forEach(element => {
-
-
-                                            yt_card(element.link, element.title, element.by, element.thumbnail, element.type, search_for)
-                                        });
-                                    }
-                                }
-
+                                yt_card(track.link, track.title, track.by, track.thumbnail, track.type, search_for)
                             })
-
                         }
                     }
+
                 })
+
+
+            }
+            else {
+                // playlist etc
+                console.log(url)
+                if (url != undefined) {
+                    console.log({ search: url, type: 'link', 'no': 1 })
+                    if (from_add_all) { $('#loader2').show() }
+                    $.ajax({
+                        type: "POST",
+                        url: "/search",
+                        data: JSON.stringify({ search: url, type: 'link', 'no': 1 }),
+                        contentType: 'application/json',
+                        success: function (response) {
+                            if (response === undefined || response.length == 0) {
+                                console.error("Found Nothing")
+                                $('#error').show();
+                                $('#myerror').html("Nothing Found");
+                            } else {
+                                console.log(response)
+                                let track_names = []
+                                response.forEach(item => {
+                                    track_names.push(item.name + ' ' + item.by)
+                                });
+                                // console.log("searching playlist ")
+                                if (from_add_all) { $('#loader2').show() }
+                                $.ajax({
+                                    type: "POST",
+                                    url: "/search_yt",
+                                    data: JSON.stringify({ search: track_names }),
+                                    contentType: 'application/json',
+                                    success: function (response) {
+
+
+
+
+                                        if (response === undefined || response.length == 0) {
+                                            console.error("Found Nothing")
+                                            $('#error').show();
+                                            $('#myerror').html("Nothing Found");
+                                        }
+                                        else {
+                                            $('#loader').fadeOut()
+                                            $('#loader2').fadeOut()
+
+                                            // console.log(response)
+                                            response.forEach(element => {
+
+
+                                                yt_card(element.link, element.title, element.by, element.thumbnail, element.type, search_for)
+                                            });
+                                        }
+                                    }
+
+                                })
+
+                            }
+                        }
+                    })
+                }
             }
         }
     }
@@ -176,7 +221,15 @@ $('#search_form').submit(function (e) {
 $('body').on('click', '.remove', function () {
 
     let spotiCard = $(this).closest('.spoti-card');
-    spotiCard.fadeOut();
+    spotiCard.remove();
+    let removeIndex = tracks_name.indexOf($(this).closest('.spoti-card').data('name'))
+
+    crop_tracks_name.splice(removeIndex, 1)
+    all_artists.splice(removeIndex, 1)
+    urls.splice(removeIndex, 1)
+    types.splice(removeIndex, 1)
+    track_lengths.splice(removeIndex, 1)
+
 })
 
 //add btn on spoti card
@@ -239,18 +292,33 @@ $('#add-all-main').click(function () {
         $('#loader2').show()
 
         console.log(crop_track_names)
-        for (i = 0; i <= crop_track_names.length - 1; i++) {
+        if (window.location.pathname.replaceAll('/', '') === 'liked') {
+            liked = true
+        }
+        console.log(liked)
+        if (liked) {
+            let liked_all_tracks = []
+
+            for (i = 0; i <= crop_track_names.length - 1; i++) {
+                liked_all_tracks.push(crop_track_names[i] + ' ' + crop_all_artists[i])
+            }
+            console.log(liked_all_tracks)
+            addYTCard(undefined, liked_all_tracks, undefined, true, liked)
+
+        } else {
+            for (i = 0; i <= crop_track_names.length - 1; i++) {
 
 
-            let type2 = crop_types[i];
-            let search_for2 = crop_track_names[i] + ' ' + crop_all_artists[i];
+                let type2 = crop_types[i];
+                let search_for2 = crop_track_names[i] + ' ' + crop_all_artists[i];
 
-            let url2 = crop_urls[i];
-            $('#loader2').show()
-            console.log(url2)
-            addYTCard(type2, search_for2, url2, true)
+                let url2 = crop_urls[i];
+                $('#loader2').show()
+                console.log(url2)
+                addYTCard(type2, search_for2, url2, true, liked)
 
 
+            }
         }
 
 

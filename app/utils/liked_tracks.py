@@ -6,9 +6,13 @@ dotenv.load_dotenv()
 
 
 class GetToken:
-    def __init__(self, code, request):
+
+    def __init__(self, code, request, client_id, client_secret, redirect_uri):
         scope = "user-library-read"
-        sp_oauth = SpotifyOAuth(scope=scope)
+        sp_oauth = SpotifyOAuth(client_id=client_id,
+                                client_secret=client_secret,
+                                redirect_uri=redirect_uri,
+                                scope=scope)
         token_info = sp_oauth.get_access_token(code)
 
         self.access_token = token_info['access_token']
@@ -20,6 +24,7 @@ class GetToken:
 
 
 class GetLikedTracks:
+
     def __init__(self, access_token, refresh_token, request) -> None:
         sp = spotipy.Spotify(auth=access_token)
 
@@ -37,7 +42,11 @@ class GetLikedTracks:
 
     def getinfo(self):
         user_info = self.sp.me()
-        info = {"name": user_info["display_name"], "link": user_info["external_urls"]["spotify"],"img":user_info["images"][0]["url"]}
+        info = {
+            "name": user_info["display_name"],
+            "link": user_info["external_urls"]["spotify"],
+            "img": user_info["images"][0]["url"]
+        }
 
         return info
 
@@ -54,8 +63,13 @@ class GetLikedTracks:
 
             by = track['artists'][0]['name']
 
-            results = {'name': track_name, 'by': by, 'url': track['external_urls']
-                       ['spotify'], 'img': track['album']['images'][1]['url'], 'type': 'Track'}
+            results = {
+                'name': track_name,
+                'by': by,
+                'url': track['external_urls']['spotify'],
+                'img': track['album']['images'][1]['url'],
+                'type': 'Track'
+            }
             finalresults.append(results)
 
         return finalresults

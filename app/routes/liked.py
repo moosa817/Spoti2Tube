@@ -22,34 +22,46 @@ liked_app = APIRouter()
 
 
 @liked_app.get("/liked")
-async def Liked(request: Request, settings: Annotated[Settings, Depends(get_settings)]):
+async def Liked(request: Request, settings: Annotated[Settings,
+                                                      Depends(get_settings)]):
 
     session = request.session
     context = {"request": request}
 
     if not session.get("email"):
-        context = {"request": request,
-                   "status": "not_verified", "login": False}
+        context = {
+            "request": request,
+            "status": "not_verified",
+            "login": False
+        }
     elif session.get("status") == "pending":
         context = {"request": request, "status": "pending", "login": False}
-    elif session.get("status") == "verified" and not session.get("access_token"):
+    elif session.get(
+            "status") == "verified" and not session.get("access_token"):
         context = {"request": request, "status": "verified", "login": False}
 
-    if session.get("access_token") and session.get("refresh_token") and session.get("status") == "verified":
-        liked_tracks = GetLikedTracks(session.get(
-            "access_token"), session.get("refresh_token"), request)
+    if session.get("access_token") and session.get(
+            "refresh_token") and session.get("status") == "verified":
+        liked_tracks = GetLikedTracks(session.get("access_token"),
+                                      session.get("refresh_token"), request)
 
         tracks = liked_tracks.savedTracks()
         userinfo = liked_tracks.getinfo()
-        context = {"request": request, "login": True,
-                   "status": "verified", "tracks": tracks, "userinfo": userinfo}
+        context = {
+            "request": request,
+            "login": True,
+            "status": "verified",
+            "tracks": tracks,
+            "userinfo": userinfo
+        }
 
     context["callback"] = settings.callback_url
     return templates.TemplateResponse("liked.html", context=context)
 
 
 @liked_app.post("/verify")
-async def verify(request: Request, item: EmailItem, settings: Annotated[Settings, Depends(get_settings)]):
+async def verify(request: Request, item: EmailItem,
+                 settings: Annotated[Settings, Depends(get_settings)]):
     email = item.email
     if not validate_email(email):
         return {"success": False}
@@ -68,13 +80,24 @@ async def verify(request: Request, item: EmailItem, settings: Annotated[Settings
         send_email(settings.email_sender, "Spoti2Tube",
                    f"Add this Email to spotify liked feature {email}")
 
-    return {"email": email, "status": request.session.get("status"), "success": True}
+    return {
+        "email": email,
+        "status": request.session.get("status"),
+        "success": True
+    }
 
 
 @liked_app.get("/callback")
-async def callback(request: Request, code: str):
+async def callback(request: Request, code: str,
+                   settings: Annotated[Settings,
+                                       Depends(get_settings)]):
     if code:
-        GetToken(code, request)  # gets access token and sets sessions
+        GetToken(code,
+                 request,
+                 client_id=settings.client_id,
+                 client_secret=settings.client_secret,
+                 redirect_uri=settings.callback_url
+                 )  # gets access token and sets sessions
         return RedirectResponse("/liked")
     else:
         return {"error": "No Code Provided"}

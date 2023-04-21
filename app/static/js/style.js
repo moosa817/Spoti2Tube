@@ -105,7 +105,7 @@ $('.hide-alert').click(function () {
 
 
 function removeFadeOut() {
-    $('div[name=fadeOut]').delay(8000).fadeOut('fast');
+    $('div[name=fadeOut]').delay(12000).fadeOut('fast');
 }
 
 setInterval(removeFadeOut, 1000);
