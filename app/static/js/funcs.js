@@ -98,7 +98,22 @@ function yt_card(link, ytname, artist, img, type, search_name) {
         </div>
 
 `
-    $('#yt-col').append(content);
+
+
+    var hrefs = $('.yt-link').map(function () {
+        return $(this).attr('href');
+    }).get();
+
+    if (hrefs.includes(link)) {
+
+        $('#error').show()
+        $('#myerror').text("Already Added Skipping")
+
+    }
+    else {
+        $('#yt-col').append(content);
+
+    }
 
 }
 

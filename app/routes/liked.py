@@ -65,7 +65,7 @@ async def verify(request: Request, item: EmailItem, settings: Annotated[Settings
     else:
         records.insert_one({"email": email, "status": "pending"})
         request.session["status"] = "pending"
-        send_email(settings.email_sender, "Spotifree",
+        send_email(settings.email_sender, "Spoti2Tube",
                    f"Add this Email to spotify liked feature {email}")
 
     return {"email": email, "status": request.session.get("status"), "success": True}

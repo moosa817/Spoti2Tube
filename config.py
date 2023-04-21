@@ -6,7 +6,7 @@ from functools import lru_cache
 
 
 class Settings(BaseSettings):
-    app_name: str = "Spotifree"
+    app_name: str = "Spoti2Tube"
     author: str = "Moosa (github.com/moosa817)"
 
     client_id: str = os.getenv("CLIENT_ID")

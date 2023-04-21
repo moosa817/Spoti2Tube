@@ -1,8 +1,8 @@
-# Spotifree
+# Spoti2Tube
 Fast Api App to download tracks/playlist even liked songs 
 
 Website Live Demo At 
-http://spotifree.moosa817.repl.co/
+http://Spoti2Tube.moosa817.repl.co/
 
 <hr>
 <h2>how to run this app</h2>
