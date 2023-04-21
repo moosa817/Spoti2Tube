@@ -2,6 +2,7 @@ $(document).ready(function () {
     $('#loading-bar').fadeOut()
 });
 $('#loader').hide()
+$('#loader2').hide()
 $('#boxs').hide()
 
 

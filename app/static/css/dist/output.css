@@ -645,14 +645,6 @@ video {
   top: 0.75rem;
 }
 
-.left-1\/2 {
-  left: 50%;
-}
-
-.left-1\/4 {
-  left: 25%;
-}
-
 .z-10 {
   z-index: 10;
 }
@@ -710,6 +702,11 @@ video {
 .mx-auto {
   margin-left: auto;
   margin-right: auto;
+}
+
+.my-1 {
+  margin-top: 0.25rem;
+  margin-bottom: 0.25rem;
 }
 
 .my-10 {
@@ -783,10 +780,6 @@ video {
   margin-top: 1rem;
 }
 
-.ml-10 {
-  margin-left: 2.5rem;
-}
-
 .block {
   display: block;
 }
@@ -815,6 +808,10 @@ video {
   display: none;
 }
 
+.h-14 {
+  height: 3.5rem;
+}
+
 .h-20 {
   height: 5rem;
 }
@@ -841,6 +838,22 @@ video {
 
 .h-\[calc\(100\%-1rem\)\] {
   height: calc(100% - 1rem);
+}
+
+.h-\[90vh\] {
+  height: 90vh;
+}
+
+.h-\[100vh\] {
+  height: 100vh;
+}
+
+.max-h-\[50vh\] {
+  max-height: 50vh;
+}
+
+.max-h-\[80vh\] {
+  max-height: 80vh;
 }
 
 .max-h-full {
@@ -897,10 +910,6 @@ video {
 
 .max-w-screen-xl {
   max-width: 1280px;
-}
-
-.max-w-full {
-  max-width: 100%;
 }
 
 .flex-shrink-0 {
@@ -966,6 +975,10 @@ video {
 
 .overflow-x-hidden {
   overflow-x: hidden;
+}
+
+.overflow-y-scroll {
+  overflow-y: scroll;
 }
 
 .whitespace-nowrap {
@@ -1498,6 +1511,11 @@ video {
   background-color: rgb(254 202 202 / var(--tw-bg-opacity));
 }
 
+.hover\:bg-red-800:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(153 27 27 / var(--tw-bg-opacity));
+}
+
 .hover\:bg-gradient-to-br:hover {
   background-image: linear-gradient(to bottom right, var(--tw-gradient-stops));
 }
@@ -1782,19 +1800,9 @@ video {
   --tw-ring-color: rgb(153 27 27 / var(--tw-ring-opacity));
 }
 
-@media (min-width: 400px) {
-  .xs\:min-w-\[50\%\] {
-    min-width: 50%;
-  }
-}
-
 @media (min-width: 640px) {
   .sm\:left-1\/4 {
     left: 25%;
-  }
-
-  .sm\:right-1\/4 {
-    right: 25%;
   }
 
   .sm\:block {
@@ -1803,10 +1811,6 @@ video {
 
   .sm\:w-3\/4 {
     width: 75%;
-  }
-
-  .sm\:w-1\/2 {
-    width: 50%;
   }
 
   .sm\:min-w-\[50\%\] {
@@ -1831,10 +1835,6 @@ video {
 @media (min-width: 768px) {
   .md\:inset-0 {
     inset: 0px;
-  }
-
-  .md\:left-1\/4 {
-    left: 25%;
   }
 
   .md\:mt-0 {

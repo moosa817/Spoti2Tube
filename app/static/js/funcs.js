@@ -1,7 +1,7 @@
 function spotify_card(trackname, link, artist, type, img, length) {
 
     let content = `
-       <div class="spoti-card" data-length="${length}" data-name="${trackname}">
+       <div class="spoti-card" data-length="${length}" data-name="${trackname}" data-type="${type}" data-artist="${artist}" data-url="${link}">
 
             <div
                 class="dark:bg-gray-950 bg-gray-300 rounded-lg p-4 m-4 grid md:grid-flow-col md:grid-cols-3 grid-flow-row ">
@@ -46,14 +46,14 @@ function spotify_card(trackname, link, artist, type, img, length) {
 `
     $('#spotify-cards').prepend(content);
     if (type === 'Track') {
-        $('.track-length').hide()
+        $(`[data-name="${trackname}"] .track-length`).hide()
     }
 
 }
 
 
-function yt_card(link, ytname, artist, img, type) {
-    let content = `<div class="yt-card">
+function yt_card(link, ytname, artist, img, type, search_name) {
+    let content = `<div class="yt-card" data-search="${search_name}">
             <div
                 class="dark:bg-gray-950 bg-gray-300 rounded-lg p-4 m-4 grid md:grid-flow-col md:grid-cols-3 grid-flow-row ">
                 <div class="custom-span">
@@ -88,7 +88,7 @@ function yt_card(link, ytname, artist, img, type) {
                                     </g>
                                 </svg></button>
                         </div>
-                        <div> <button class="bg-red-600 rounded-[50%] w-6 ml-1 h-6 hover:scale-110"
+                        <div> <button class="yt-remove bg-red-600 rounded-[50%] w-6 ml-1 h-6 hover:scale-110"
                                 style="border-radius:60%;"><i class=" fa-solid fa-minus "></i></button>
                         </div>
 
