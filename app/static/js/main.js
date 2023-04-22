@@ -13,10 +13,10 @@ const item_limiter = 20;
 
 let search_yt_items = [];
 
-let track_lengths;
+let track_lengths = [];
 let tracks_name = [];
 let all_artists = [];
-let types = []; //track length types
+let types = [];
 let urls = [];
 
 let crop_track_lengths;
@@ -27,137 +27,8 @@ let crop_urls = [];
 
 
 let liked = false;
-// checks stuff and adds yt-card (not the card itself)
-function addYTCard(type, search_for, url, from_add_all = false, liked = false) {
-    if (search_yt_items.includes(search_for)) {
-        $('#error').show();
-        $('#myerror').html("Already Added");
-    }
-    else {
-        if (liked) {
-            console.log("adding all from liked lez go")
-            $.ajax({
-                type: "POST",
-                url: "/search_yt",
-                data: JSON.stringify({ search: search_for }),
-                contentType: 'application/json',
-                success: function (response) {
-                    $('#loader2').fadeOut()
-                    $('#loader').fadeOut()
-                    if (response === undefined || response.length == 0) {
-                        console.error("Found Nothing")
-                        $('#error').show();
-                        $('#myerror').html("Nothing Found");
-                    }
-                    else {
-                        let counter = 0
-                        response.forEach(track => {
-                            counter += 1
-                            yt_card(track.link, track.title, track.by, track.thumbnail, track.type, search_for[counter])
-                        })
-                    }
-                }
-            })
 
 
-
-        } else {
-
-
-            search_yt_items.push(search_for)
-            if (type === 'Track') {
-                let songs = [search_for]
-                // search for yt url
-                if (from_add_all) { $('#loader2').show() }
-                $.ajax({
-                    type: "POST",
-                    url: "/search_yt",
-                    data: JSON.stringify({ search: songs }),
-                    contentType: 'application/json',
-                    success: function (response) {
-                        $('#loader2').fadeOut()
-                        $('#loader').fadeOut()
-                        if (response === undefined || response.length == 0) {
-                            console.error("Found Nothing")
-                            $('#error').show();
-                            $('#myerror').html("Nothing Found");
-                        }
-                        else {
-                            let track = response[0]
-                            // console.log()
-                            response.forEach(track => {
-
-                                yt_card(track.link, track.title, track.by, track.thumbnail, track.type, search_for)
-                            })
-                        }
-                    }
-
-                })
-
-
-            }
-            else {
-                // playlist etc
-                console.log(url)
-                if (url != undefined) {
-                    console.log({ search: url, type: 'link', 'no': 1 })
-                    if (from_add_all) { $('#loader2').show() }
-                    $.ajax({
-                        type: "POST",
-                        url: "/search",
-                        data: JSON.stringify({ search: url, type: 'link', 'no': 1 }),
-                        contentType: 'application/json',
-                        success: function (response) {
-                            if (response === undefined || response.length == 0) {
-                                console.error("Found Nothing")
-                                $('#error').show();
-                                $('#myerror').html("Nothing Found");
-                            } else {
-                                console.log(response)
-                                let track_names = []
-                                response.forEach(item => {
-                                    track_names.push(item.name + ' ' + item.by)
-                                });
-                                // console.log("searching playlist ")
-                                if (from_add_all) { $('#loader2').show() }
-                                $.ajax({
-                                    type: "POST",
-                                    url: "/search_yt",
-                                    data: JSON.stringify({ search: track_names }),
-                                    contentType: 'application/json',
-                                    success: function (response) {
-
-
-
-
-                                        if (response === undefined || response.length == 0) {
-                                            console.error("Found Nothing")
-                                            $('#error').show();
-                                            $('#myerror').html("Nothing Found");
-                                        }
-                                        else {
-                                            $('#loader').fadeOut()
-                                            $('#loader2').fadeOut()
-
-                                            // console.log(response)
-                                            response.forEach(element => {
-
-
-                                                yt_card(element.link, element.title, element.by, element.thumbnail, element.type, search_for)
-                                            });
-                                        }
-                                    }
-
-                                })
-
-                            }
-                        }
-                    })
-                }
-            }
-        }
-    }
-}
 
 
 
@@ -204,6 +75,7 @@ $('#search_form').submit(function (e) {
                         all_artists.push(element.by)
                         urls.push(element.url)
                         types.push(element.type)
+                        track_lengths.push(element.length)
 
                         spotify_card(element.name, element.url, element.by, element.type, element.img, element.length)
 
@@ -224,7 +96,7 @@ $('body').on('click', '.remove', function () {
     spotiCard.remove();
     let removeIndex = tracks_name.indexOf($(this).closest('.spoti-card').data('name'))
 
-    crop_tracks_name.splice(removeIndex, 1)
+    tracks_name.splice(removeIndex, 1)
     all_artists.splice(removeIndex, 1)
     urls.splice(removeIndex, 1)
     types.splice(removeIndex, 1)
@@ -254,8 +126,13 @@ $('body').on('click', '.add', function () {
         } else {
             $('#loader').show()
             $('#loader-txt').text("Adding Your Tracks, this might take upto a minute")
+            $('#success').show()
+            $('#mysuccess').text("Adding Tracks")
 
             addYTCard(type, search_for, url)
+
+
+
         }
     }
     console.log(search_for, item_length)
@@ -287,9 +164,9 @@ $('#add-all-main').click(function () {
 
 
 
-        $('#loader-txt2').text("Adding All Tracks This will take a while")
+        $('#loader-txt').text("Adding All Tracks This will take a while")
 
-        $('#loader2').show()
+        $('#loader').show()
 
         console.log(crop_track_names)
         if (window.location.pathname.replaceAll('/', '') === 'liked') {
@@ -303,7 +180,7 @@ $('#add-all-main').click(function () {
                 liked_all_tracks.push(crop_track_names[i] + ' ' + crop_all_artists[i])
             }
             console.log(liked_all_tracks)
-            addYTCard(undefined, liked_all_tracks, undefined, true, liked)
+            addYTCard(undefined, liked_all_tracks, undefined, liked)
 
         } else {
             for (i = 0; i <= crop_track_names.length - 1; i++) {
@@ -313,9 +190,9 @@ $('#add-all-main').click(function () {
                 let search_for2 = crop_track_names[i] + ' ' + crop_all_artists[i];
 
                 let url2 = crop_urls[i];
-                $('#loader2').show()
+                $('#loader').show()
                 console.log(url2)
-                addYTCard(type2, search_for2, url2, true, liked)
+                addYTCard(type2, search_for2, url2, liked)
 
 
             }

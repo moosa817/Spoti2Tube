@@ -11,14 +11,16 @@ index_app = APIRouter()
 
 
 @index_app.get("/")
-async def home(request: Request, settings: Annotated[Settings, Depends(get_settings)]):
+async def home(request: Request, settings: Annotated[Settings,
+                                                     Depends(get_settings)]):
+
     context = {"request": request}
     return templates.TemplateResponse("home.html", context=context)
 
 
 @index_app.get("/clear")
 async def clear_session(request: Request, logout=False):
-    if logout == False or logout == 'False':
+    if logout == True or logout == 'True':
         del request.session["access_token"]
         del request.session["refresh_token"]
         request.session["status"] = "verified"

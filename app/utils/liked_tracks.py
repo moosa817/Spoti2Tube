@@ -25,12 +25,13 @@ class GetToken:
 
 class GetLikedTracks:
 
-    def __init__(self, access_token, refresh_token, request) -> None:
+    def __init__(self, access_token: str, refresh_token: str, request,
+                 limit: int) -> None:
         sp = spotipy.Spotify(auth=access_token)
-
-        self.sp = sp
+        self.limit = limit
         try:
-            self.results = sp.current_user_saved_tracks()
+            self.sp = sp
+
         except:
             try:
                 auth_manager = sp.auth_manager
@@ -42,32 +43,48 @@ class GetLikedTracks:
 
     def getinfo(self):
         user_info = self.sp.me()
+        results = self.sp.current_user_saved_tracks(limit=1)
         info = {
             "name": user_info["display_name"],
             "link": user_info["external_urls"]["spotify"],
-            "img": user_info["images"][0]["url"]
+            "img": user_info["images"][0]["url"],
+            "max_tracks": results['total']
         }
 
         return info
 
     def savedTracks(self):
-        results = self.results
-
         finalresults = []
-        for item in results['items']:
-            track = item['track']
-            track_name = track['name']
+
+        n = 0
+        num_tracks = self.limit
+
+        results = self.sp.current_user_saved_tracks(limit=min(50, num_tracks))
+        tracks = results['items']
+        num_retrieved = len(tracks)
+
+        while num_retrieved < num_tracks and results['next']:
+            results = self.sp.next(results)
+            tracks.extend(results['items'])
+            num_retrieved += len(results['items'])
+
+        for track in tracks:
+            mytrack = track['track']
+
+            track_name = mytrack['name']
 
             track_name = track_name.replace('"', '')
             track_name = track_name.replace("'", '')
 
-            by = track['artists'][0]['name']
+            by = mytrack['artists'][0]['name']
+            image_url = mytrack['album']['images'][0]['url'] if track['track'][
+                'album']['images'] else None
 
             results = {
                 'name': track_name,
                 'by': by,
-                'url': track['external_urls']['spotify'],
-                'img': track['album']['images'][1]['url'],
+                'url': mytrack['external_urls']['spotify'],
+                'img': image_url,
                 'type': 'Track'
             }
             finalresults.append(results)

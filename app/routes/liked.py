@@ -22,9 +22,11 @@ liked_app = APIRouter()
 
 
 @liked_app.get("/liked")
-async def Liked(request: Request, settings: Annotated[Settings,
-                                                      Depends(get_settings)]):
+async def Liked(request: Request,
+                settings: Annotated[Settings, Depends(get_settings)],
+                limit=50):
 
+    limit = int(limit)
     session = request.session
     context = {"request": request}
 
@@ -43,7 +45,8 @@ async def Liked(request: Request, settings: Annotated[Settings,
     if session.get("access_token") and session.get(
             "refresh_token") and session.get("status") == "verified":
         liked_tracks = GetLikedTracks(session.get("access_token"),
-                                      session.get("refresh_token"), request)
+                                      session.get("refresh_token"), request,
+                                      limit)
 
         tracks = liked_tracks.savedTracks()
         userinfo = liked_tracks.getinfo()

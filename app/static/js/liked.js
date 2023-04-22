@@ -74,7 +74,7 @@ $('#liked_email').submit(function (e) {
             }
             else {
                 $('#error').show();
-                $('#error #myerror').html("Unvalid Email Address");
+                $('#myerror').html("Unvalid Email Address");
             }
 
         }
@@ -82,15 +82,13 @@ $('#liked_email').submit(function (e) {
 
 });
 
-let tracks = $('#liked-tracks').attr('data');
-if (tracks !== undefined) {
+
+
+
+if (mytracks !== undefined) {
     $('#boxs').show()
-    tracks = tracks.replaceAll("'", '"');
 
-    tracks = JSON.parse(tracks)
-
-
-    tracks.forEach(track => {
+    mytracks.reverse().forEach(track => {
 
 
 
@@ -106,3 +104,31 @@ if (tracks !== undefined) {
 
 
 }
+const queryParams = new URLSearchParams(window.location.search);
+const limit = queryParams.get('limit');
+
+if (limit == null) {
+    $('#n-link').attr('href', 'liked?limit=' + '50')
+} else {
+    $('#liked-range').val(limit)
+    $('#n-link').attr('href', 'liked?limit=' + limit)
+
+}
+
+$('#liked-range').on('change', function () {
+    if ($(this).val() > max_tracks) {
+        $('#n-link').attr('href', 'liked?limit=' + max_tracks)
+        $('#liked-range').val(max_tracks)
+
+    }
+
+
+    $('#n-link').attr('href', 'liked?limit=' + $(this).val())
+});
+
+$('#all-check').on('change', function () {
+    if (this.checked) {
+        $('#liked-range').val(max_tracks)
+        $('#n-link').attr('href', 'liked?limit=' + max_tracks)
+    }
+})

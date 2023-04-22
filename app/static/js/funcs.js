@@ -111,7 +111,7 @@ function yt_card(link, ytname, artist, img, type, search_name) {
 
     }
     else {
-        $('#yt-col').append(content);
+        $('#yt-cards').prepend(content);
 
     }
 
@@ -136,4 +136,140 @@ function AddModal(no, name, length) {
     // $('#modal-text').text("Are you sure you want to add all these tracks ?")
 
 
+}
+
+// checks stuff and adds yt-card (not the card itself)
+function addYTCard(type, search_for, url, liked = false) {
+    if (search_yt_items.includes(search_for)) {
+        $('#error').show();
+        $('#myerror').text("Already Added");
+    }
+    else {
+        if (liked) {
+            console.log("adding all from liked lez go")
+            $.ajax({
+                type: "POST",
+                url: "/search_yt",
+                data: JSON.stringify({ search: search_for }),
+                contentType: 'application/json',
+                success: function (response) {
+                    $('#loader').fadeOut()
+                    if (response === undefined || response.length == 0) {
+                        console.error("Found Nothing")
+                        $('#error').show();
+                        $('#myerror').html("Nothing Found");
+                    }
+                    else {
+                        let counter = 0
+                        response.forEach(track => {
+                            counter += 1
+                            yt_card(track.link, track.title, track.by, track.thumbnail, track.type, search_for[counter])
+                        })
+                    }
+                }
+            })
+
+
+
+        } else {
+
+
+            search_yt_items.push(search_for)
+            if (type === 'Track') {
+                let songs = [search_for]
+                // search for yt url
+                $('#loader').show()
+                $.ajax({
+                    type: "POST",
+                    url: "/search_yt",
+                    data: JSON.stringify({ search: songs }),
+                    contentType: 'application/json',
+                    success: function (response) {
+                        $('#loader').fadeOut()
+                        if (response === undefined || response.length == 0) {
+                            console.error("Found Nothing")
+                            $('#error').show();
+                            $('#myerror').html("Nothing Found");
+                        }
+                        else {
+                            let track = response[0]
+                            // console.log()
+                            response.forEach(track => {
+
+                                yt_card(track.link, track.title, track.by, track.thumbnail, track.type, search_for)
+                            })
+                            $('#success').show()
+                            $('#mysuccess').text("Added Tracks")
+
+                        }
+                    }
+
+                })
+
+
+            }
+            else {
+                // playlist etc
+                console.log(url)
+                if (url != undefined) {
+                    console.log({ search: url, type: 'link', 'no': 1 })
+                    $('#loader').show()
+                    $.ajax({
+                        type: "POST",
+                        url: "/search",
+                        data: JSON.stringify({ search: url, type: 'link', 'no': 1 }),
+                        contentType: 'application/json',
+                        success: function (response) {
+                            if (response === undefined || response.length == 0) {
+                                console.error("Found Nothing")
+                                $('#error').show();
+                                $('#myerror').html("Nothing Found");
+                            } else {
+                                console.log(response)
+                                let track_names = []
+                                response.forEach(item => {
+                                    track_names.push(item.name + ' ' + item.by)
+                                });
+                                // console.log("searching playlist ")
+                                $('#loader').show()
+                                $.ajax({
+                                    type: "POST",
+                                    url: "/search_yt",
+                                    data: JSON.stringify({ search: track_names }),
+                                    contentType: 'application/json',
+                                    success: function (response) {
+
+
+
+
+                                        if (response === undefined || response.length == 0) {
+                                            console.error("Found Nothing")
+                                            $('#error').show();
+                                            $('#myerror').html("Nothing Found");
+                                        }
+                                        else {
+                                            $('#loader').fadeOut()
+
+                                            // console.log(response)
+                                            response.forEach(element => {
+
+
+                                                yt_card(element.link, element.title, element.by, element.thumbnail, element.type, search_for)
+                                            });
+
+                                            $('#success').show()
+                                            $('#mysuccess').text("Added Tracks")
+
+                                        }
+                                    }
+
+                                })
+
+                            }
+                        }
+                    })
+                }
+            }
+        }
+    }
 }
