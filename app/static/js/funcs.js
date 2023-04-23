@@ -79,7 +79,7 @@ function yt_card(link, ytname, artist, img, type, search_name) {
 
                     <div class="ml-auto">
                         <div class="my-2 ">
-                            <button class="hover:scale-110 bg-green-400 p-1 rounded-lg "><svg class="h-6 text-white"
+                            <button data-url="${link}" data-title="${ytname}" class="download hover:scale-110 bg-green-400 p-1 rounded-lg "><svg class="h-6 text-white"
                                     viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <g id="Interface / Download">
                                         <path class="stroke-black dark:stroke-white" id="Vector"

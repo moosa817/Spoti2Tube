@@ -85,7 +85,7 @@ $('#liked_email').submit(function (e) {
 
 
 
-if (mytracks !== undefined) {
+if (typeof mytracks !== 'undefined') {
     $('#boxs').show()
 
     mytracks.reverse().forEach(track => {
