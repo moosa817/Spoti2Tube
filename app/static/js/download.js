@@ -92,12 +92,76 @@ $('#download-all').click(function () {
 
 //inside the modal zip btn
 $('#download-zip').click(function () {
+    $('#success').show()
+    $('#mysuccess').text("Starting Download")
+
+
     if (yt_urls.length < 1) {
         $('#error').show()
         $('#myerror').text("Nothing To Download ! ")
-    }
-    else {
-        console.log("Download all as zip")
+    } else {
+        $('#progress-bar').show()
+        $('#progress').css('width', '0' + '%');
+        $('#progress-txt').text('0')
+        $('#downloading-current').text(yt_titles[0])
+
+
+        // split youtube url to get id javascript?
+        let yt_ids = []
+        yt_urls.forEach(url => {
+            yt_ids.push(YouTubeGetID(url))
+        });
+
+        const url = "/download_all?urls_id=" + yt_ids.map(u => encodeURIComponent(u)).join(",");
+
+        console.log("here")
+        const source = new EventSource(url);
+
+        //zip object
+        const zip = new JSZip();
+
+        // A counter to keep track of how many MP3 files have been downloaded
+        let counter = 0;
+
+
+        source.onmessage = function (event) {
+            if (event.data === 'done') {
+                source.close();
+
+                zip.generateAsync({ type: "blob" })
+                    .then(function (content) {
+                        // Download the zip file
+                        saveAs(content, "mp3_files.zip");
+                        $('#progress-bar').hide()
+                        $('#success').show()
+                        $('#mysuccess').text("Downloaded Zip File")
+                    });
+
+            }
+            else {
+                let data = JSON.parse(event.data)
+                console.log(data)
+                let title = yt_titles[data.index_no]
+
+                $('#progress-bar').show()
+                $('#progress').css('width', data.percent + '%');
+                $('#progress-txt').text(data.percent)
+                $('#downloading-current').text(yt_titles[data.index_no + 1])
+
+                // Add the downloaded MP3 file to the zip file
+                zip.file(title + ".mp3", atob(data.audio_data), { binary: true });
+
+
+            }
+        };
+
+        source.addEventListener('error', function (event) {
+            console.error('EventSource error:', event);
+        });
+
+
+
+        console.log("download zip file")
     }
 })
 
