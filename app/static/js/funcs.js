@@ -111,7 +111,7 @@ function yt_card(link, ytname, artist, img, type, search_name) {
 
     }
     else {
-        $('#yt-cards').prepend(content);
+        $('#yt-cards').append(content);
 
     }
 
@@ -185,7 +185,6 @@ function addYTCard(type, search_for, url, liked = false) {
                     data: JSON.stringify({ search: songs }),
                     contentType: 'application/json',
                     success: function (response) {
-                        $('#loader').fadeOut()
                         if (response === undefined || response.length == 0) {
                             console.error("Found Nothing")
                             $('#error').show();
@@ -193,11 +192,14 @@ function addYTCard(type, search_for, url, liked = false) {
                         }
                         else {
                             let track = response[0]
+                            console.log(url, crop_urls.reverse()[crop_urls.length - 1])
+                            if (url === crop_urls.reverse()[crop_urls.length - 1]) {
+                                $('#loader').fadeOut()
+                                console.log("fading out")
+                            }
                             // console.log()
-                            response.forEach(track => {
 
-                                yt_card(track.link, track.title, track.by, track.thumbnail, track.type, search_for)
-                            })
+                            yt_card(track.link, track.title, track.by, track.thumbnail, track.type, search_for)
                             $('#success').show()
                             $('#mysuccess').text("Added Tracks")
 
@@ -248,9 +250,12 @@ function addYTCard(type, search_for, url, liked = false) {
                                             $('#myerror').html("Nothing Found");
                                         }
                                         else {
-                                            $('#loader').fadeOut()
+                                            // $('#loader').fadeOut()
 
-                                            // console.log(response)
+                                            if (url === crop_urls.reverse()[crop_urls.length - 1]) {
+                                                $('#loader').fadeOut()
+                                                console.log("fading out")
+                                            }               // console.log(response)
                                             response.forEach(element => {
 
 
