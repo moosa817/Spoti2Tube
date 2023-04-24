@@ -30,7 +30,6 @@ def download_song(url):
     with open(file_path, 'rb') as f:
         audio_data = f.read()
 
-    print(len(audio_data))
     os.remove(file_path)
     if len(audio_data) < 8_000_000:  #8mb
         return audio_data
