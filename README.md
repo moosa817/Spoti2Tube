@@ -44,6 +44,19 @@ EMAIL_RECIEVER=
 MAIL_SERVER=
 CALLBACK_URL=
 ```
+### Change Max Values it can fetch at a time(optional)
+`main.js`
+```
+const item_limiter = 200;
+
+```
+`config.py`
+
+```
+item_limiter: int = 200
+
+```
+
 
 ### Run The App
 

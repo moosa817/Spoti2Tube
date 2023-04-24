@@ -42,8 +42,10 @@ async def search(item: SearchItem, settings: Annotated[Settings,
 
 
 @search_app.post("/search_yt")
-async def SearchYT(item: YtSearchItem):
-    if len(item.search) >= 100:
+async def SearchYT(item: YtSearchItem,
+                   settings: Annotated[Settings,
+                                       Depends(get_settings)]):
+    if len(item.search) >= settings.item_limiter:
         return HTTPException(403, "tOO MANY ITEMS")
 
     # vid, title, thumbnail, by = yt_search(song)

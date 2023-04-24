@@ -9,7 +9,7 @@ style.js contains all the things related to style
 */
 
 let tracks_sum;
-const item_limiter = 20;
+const item_limiter = 200;
 
 let search_yt_items = [];
 
