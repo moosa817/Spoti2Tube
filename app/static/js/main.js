@@ -25,6 +25,7 @@ let crop_all_artists = [];
 let crop_types = [];
 let crop_urls = [];
 
+let counter;
 
 let liked = false;
 
@@ -129,7 +130,7 @@ $('body').on('click', '.add', function () {
             $('#success').show()
             $('#mysuccess').text("Adding Tracks")
 
-            addYTCard(type, search_for, url)
+            addYTCard(type, search_for, url, liked = false, from_single_file = true)
 
 
 
@@ -183,6 +184,7 @@ $('#add-all-main').click(function () {
             addYTCard(undefined, liked_all_tracks, undefined, liked)
 
         } else {
+            counter = 0;
             for (i = 0; i <= crop_track_names.length - 1; i++) {
 
 
@@ -192,6 +194,7 @@ $('#add-all-main').click(function () {
                 let url2 = crop_urls[i];
                 $('#loader').show()
                 console.log(url2)
+
                 addYTCard(type2, search_for2, url2, liked)
 
 

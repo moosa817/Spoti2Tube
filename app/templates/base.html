@@ -76,15 +76,25 @@
     {%block content%}{%endblock%}
 
 
-
+    <!-- change theme button -->
     <button id="changetheme" type="button"
         class="text-white fixed bottom-4 right-3 bg-gradient-to-r from-theme1 to-theme2 p-3 rounded"
         title="Change Theme">
         <i class="fa-solid " id="themer"></i>
 
+
     </button>
+    <!-- help button -->
+    <button data-modal-target="popup-modal4" data-modal-toggle="popup-modal4"
+        class="fixed bottom-[70px] rounded-full items-center right-3 w-8 h-6 font-bold bg-gradient-to-r from-theme2 to-theme1 text-center text-white">
+        <i class="fa-solid fa-info
+        "></i>
+    </button>
+
     {%include 'components/alerts.html'%}
     {%include 'components/modal.html'%}
+
+
 
 </body>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.4/flowbite.min.js"></script>

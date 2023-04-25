@@ -6,7 +6,7 @@ http://Spoti2Tube.moosa817.repl.co/
 
 <hr>
 <h2>how to run this app</h2>
-
+note: you need ffmpeg installed
 
 
 ### Virtualenv 

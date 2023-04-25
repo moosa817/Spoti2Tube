@@ -94,12 +94,15 @@ $('#close-icon').on('click', function () {
     $(this).addClass('hidden');
 });
 
-
-
 $('.hide-alert').click(function () {
     $(this).hide()
 })
 
+
+
+
+
+// fadeout these elemtns
 
 function removeFadeOut() {
     $('div[name=fadeOut]').delay(12000).fadeOut('fast');

@@ -44,6 +44,8 @@ function YouTubeGetID(url) {
 // single file download
 $('body').on('click', '.download', function () {
 
+    $('#success').show()
+    $('#mysuccess').text("Starting Download..")
 
     let download_link = $(this).data('url');
     let download_title = $(this).data('title')
