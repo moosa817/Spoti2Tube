@@ -50,7 +50,6 @@ $('body').on('click', '.download', function () {
     let download_link = $(this).data('url');
     let download_title = $(this).data('title')
 
-    console.log(JSON.stringify({ url: download_link }))
     $('#loader').show()
     $('#loader-txt').text("Downloading .. " + download_title)
     $.ajax({
@@ -116,7 +115,6 @@ $('#download-zip').click(function () {
 
         const url = "/download_all?urls_id=" + yt_ids.map(u => encodeURIComponent(u)).join(",");
 
-        console.log("here")
         const source = new EventSource(url);
 
         //zip object
@@ -142,7 +140,6 @@ $('#download-zip').click(function () {
             }
             else {
                 let data = JSON.parse(event.data)
-                console.log(data)
                 let title = yt_titles[data.index_no]
 
                 $('#progress-bar').show()
@@ -158,7 +155,6 @@ $('#download-zip').click(function () {
         };
 
         source.addEventListener('error', function (event) {
-            console.error('EventSource error:', event);
             source.close();
 
             zip.generateAsync({ type: "blob" })
@@ -175,7 +171,6 @@ $('#download-zip').click(function () {
 
 
 
-        console.log("download zip file")
     }
 })
 
@@ -215,7 +210,6 @@ $('#download-all-mp3').click(function () {
             }
             else {
                 let data = JSON.parse(event.data)
-                console.log(data)
                 let title = yt_titles[data.index_no]
 
                 $('#progress-bar').show()
@@ -233,12 +227,10 @@ $('#download-all-mp3').click(function () {
             $('#progress-bar').hide()
             $('#error').show()
             $('#myerror').text("Something Went Wrong Some files were'nt downloaded")
-            console.error('EventSource error:', event);
         });
 
 
 
-        console.log("download all mp3 file")
     }
 })
 

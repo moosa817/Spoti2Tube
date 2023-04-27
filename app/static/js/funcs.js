@@ -145,7 +145,6 @@ function addYTCard(type, search_for, url, liked = false, from_single_file = fals
     }
     else {
         if (liked) {
-            console.log("adding all from liked lez go")
             $.ajax({
                 type: "POST",
                 url: "/search_yt",
@@ -192,19 +191,15 @@ function addYTCard(type, search_for, url, liked = false, from_single_file = fals
                         else {
                             let track = response[0]
                             counter += 1
-                            console.log(counter)
 
                             if (counter === crop_urls.length) {
                                 $('#loader').fadeOut()
-                                console.log("fading out")
                             }
 
                             if (from_single_file) {
-                                console.log("here");
                                 $('#loader').fadeOut()
                             }
 
-                            // console.log()
 
                             yt_card(track.link, track.title, track.by, track.thumbnail, track.type, search_for)
                             $('#success').show()
@@ -219,9 +214,7 @@ function addYTCard(type, search_for, url, liked = false, from_single_file = fals
             }
             else {
                 // playlist etc
-                console.log(url)
                 if (url != undefined) {
-                    console.log({ search: url, type: 'link', 'no': 1 })
                     $('#loader').show()
                     $.ajax({
                         type: "POST",
@@ -234,12 +227,10 @@ function addYTCard(type, search_for, url, liked = false, from_single_file = fals
                                 $('#error').show();
                                 $('#myerror').html("Nothing Found");
                             } else {
-                                console.log(response)
                                 let track_names = []
                                 response.forEach(item => {
                                     track_names.push(item.name + ' ' + item.by)
                                 });
-                                // console.log("searching playlist ")
                                 $('#loader').show()
                                 $.ajax({
                                     type: "POST",
@@ -262,12 +253,10 @@ function addYTCard(type, search_for, url, liked = false, from_single_file = fals
 
 
                                             counter += 1
-                                            console.log(counter)
 
                                             if (counter === crop_urls.length) {
                                                 $('#loader').fadeOut()
-                                                console.log("fading out")
-                                            }               // console.log(response)
+                                            }
                                             response.forEach(element => {
 
 

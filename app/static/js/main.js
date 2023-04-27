@@ -46,7 +46,6 @@ $('#search_form').submit(function (e) {
         no = parseInt(no);
     }
 
-    // console.log(search_val, tracks_name)
     $('#loading-bar').show();
 
     $.ajax({
@@ -107,7 +106,6 @@ $('body').on('click', '.remove', function () {
 
 //add btn on spoti card
 $('body').on('click', '.add', function () {
-    // console.log()
 
     let search_for = $(this).attr('data');
     let type = $(this).attr('data-type');
@@ -136,7 +134,6 @@ $('body').on('click', '.add', function () {
 
         }
     }
-    console.log(search_for, item_length)
 })
 
 
@@ -148,7 +145,6 @@ $('#add-all-main').click(function () {
 
     let tracks_sum_int = parseInt($('#tracks-sum').text())
 
-    // console.log(crop_all_artists, crop_track_lengths, crop_track_names, crop_types)
 
 
     if ($('.yt-card').length + tracks_sum_int > item_limiter) {
@@ -156,7 +152,6 @@ $('#add-all-main').click(function () {
         $('#myerror').html(`You can only add upto ${item_limiter} tracks at a time`);
     }
     else {
-        console.log("ofc running this")
         $('#close-modal').trigger("click");
 
         $('#success').show();
@@ -169,18 +164,15 @@ $('#add-all-main').click(function () {
 
         $('#loader').show()
 
-        console.log(crop_track_names)
         if (window.location.pathname.replaceAll('/', '') === 'liked') {
             liked = true
         }
-        console.log(liked)
         if (liked) {
             let liked_all_tracks = []
 
             for (i = 0; i <= crop_track_names.length - 1; i++) {
                 liked_all_tracks.push(crop_track_names[i] + ' ' + crop_all_artists[i])
             }
-            console.log(liked_all_tracks)
             addYTCard(undefined, liked_all_tracks, undefined, liked)
 
         } else {
@@ -193,7 +185,6 @@ $('#add-all-main').click(function () {
 
                 let url2 = crop_urls[i];
                 $('#loader').show()
-                console.log(url2)
 
                 addYTCard(type2, search_for2, url2, liked)
 
@@ -206,9 +197,6 @@ $('#add-all-main').click(function () {
 
     }
 
-    // console.log(track_lengths)
-    // console.log(tracks_sum_int, tracks_name, all_artists)
-    // crop_track_lengths = track_lengths
 })
 
 
@@ -217,11 +205,9 @@ $('#add-all-main').click(function () {
 // when the index thingy changes from add all modal
 $('#starting-index, #ending-index').on('change', function () {
     var value = $(this).val();
-    console.log('Input changed to: ' + value);
 
     let starting_index = $('#starting-index').val()
     let ending_index = $('#ending-index').val()
-    console.log(starting_index, ending_index)
 
     crop_track_lengths = track_lengths.slice(starting_index - 1, ending_index)
     crop_all_artists = all_artists.slice(starting_index - 1, ending_index)
@@ -234,7 +220,6 @@ $('#starting-index, #ending-index').on('change', function () {
         return a + b;
     }, 0);
 
-    console.log(crop_track_lengths)
     $('#tracks-sum').text(tracks_sum)
 });
 
