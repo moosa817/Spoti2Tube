@@ -159,6 +159,18 @@ $('#download-zip').click(function () {
 
         source.addEventListener('error', function (event) {
             console.error('EventSource error:', event);
+            source.close();
+
+            zip.generateAsync({ type: "blob" })
+                .then(function (content) {
+                    // Download the zip file
+                    saveAs(content, "mp3_files.zip");
+                    $('#progress-bar').hide()
+                    $('#error').show()
+                    $('#myerror').text("Something Went Wrong Some files were'nt downloaded")
+
+                });
+
         });
 
 
@@ -217,6 +229,10 @@ $('#download-all-mp3').click(function () {
         };
 
         source.addEventListener('error', function (event) {
+            source.close();
+            $('#progress-bar').hide()
+            $('#error').show()
+            $('#myerror').text("Something Went Wrong Some files were'nt downloaded")
             console.error('EventSource error:', event);
         });
 
