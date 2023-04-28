@@ -1,6 +1,15 @@
-let yt_urls = [];
-let yt_titles = [];
+let yt_urls = []; //list of songs to download
+let yt_titles = []; //title ofc
+let yt_ids = [];
 $('#progress-bar').hide()
+
+let crop_yt_urls = [];
+let crop_yt_titles = [];
+let crop_yt_ids = [];
+
+let total_index; //how many songs to download
+let current_index; //which song being downloaded
+let current_percent;
 
 
 function downloadBase64AsMp3(base64, filename) {
@@ -78,7 +87,6 @@ $('body').on('click', '.download', function () {
 $('#download-all').click(function () {
     yt_urls = []
     yt_titles = []
-    let yt_title;
     $('.yt-link').each(function () {
         yt_urls.push($(this).attr('href'))
         let yt_title = $(this).text()
@@ -88,6 +96,12 @@ $('#download-all').click(function () {
         yt_titles.push(yt_title)
 
     });
+
+    yt_ids = []
+    yt_urls.forEach(url => {
+        yt_ids.push(YouTubeGetID(url))
+    });
+
 
 })
 
@@ -107,24 +121,18 @@ $('#download-zip').click(function () {
         $('#downloading-current').text(yt_titles[0])
 
 
-        // split youtube url to get id javascript?
-        let yt_ids = []
-        yt_urls.forEach(url => {
-            yt_ids.push(YouTubeGetID(url))
-        });
 
         const url = "/download_all?urls_id=" + yt_ids.map(u => encodeURIComponent(u)).join(",");
 
-        const source = new EventSource(url);
+        let source = new EventSource(url);
 
         //zip object
         const zip = new JSZip();
 
-        // A counter to keep track of how many MP3 files have been downloaded
-        let counter = 0;
 
+        // source.onmessage = function (event) {
+        const handleMessage1 = (event) => {
 
-        source.onmessage = function (event) {
             if (event.data === 'done') {
                 source.close();
 
@@ -138,21 +146,56 @@ $('#download-zip').click(function () {
                     });
 
             }
+            else if (JSON.parse(event.data).timeout === true) {
+                let current_id = JSON.parse(event.data).url_id
+                current_index = yt_ids.indexOf(current_id)
+
+                source.close()
+                console.error("SSE connection timed out, reconnecting");
+
+                crop_yt_urls = yt_urls.slice(current_index)
+                crop_yt_titles = yt_titles.slice(current_index)
+                crop_yt_ids = []
+                crop_yt_urls.forEach(url => {
+                    crop_yt_ids.push(YouTubeGetID(url))
+                });
+
+                let url = "/download_all?urls_id=" + crop_yt_ids.map(u => encodeURIComponent(u)).join(",");
+
+                setTimeout(() => {
+                    // Create a new connection with the same event listener
+                    const newSource = new EventSource(url);
+                    newSource.onmessage = handleMessage1;
+                    newSource.onerror = source.onerror;
+                    source = newSource;
+                }, 1000);
+
+            }
             else {
+
+                let current_id3 = JSON.parse(event.data).url_id
+                current_index = yt_ids.indexOf(current_id3)
+
                 let data = JSON.parse(event.data)
-                let title = yt_titles[data.index_no]
+                let title = yt_titles[current_index]
+
+                current_percent = Math.round(((current_index + 1) / yt_ids.length) * 100)
+
 
                 $('#progress-bar').show()
-                $('#progress').css('width', data.percent + '%');
-                $('#progress-txt').text(data.percent)
-                $('#downloading-current').text(yt_titles[data.index_no + 1])
+                $('#progress').css('width', current_percent + '%');
+                $('#progress-txt').text(current_percent)
+                $('#downloading-current').text(yt_titles[current_index + 1])
 
                 // Add the downloaded MP3 file to the zip file
                 zip.file(title + ".mp3", atob(data.audio_data), { binary: true });
 
 
             }
+
         };
+        source.onmessage = handleMessage1
+
 
         source.addEventListener('error', function (event) {
             source.close();
@@ -189,18 +232,12 @@ $('#download-all-mp3').click(function () {
         $('#progress-txt').text('0')
         $('#downloading-current').text(yt_titles[0])
 
+        let url = "/download_all?urls_id=" + yt_ids.map(u => encodeURIComponent(u)).join(",");
 
-        // split youtube url to get id javascript?
-        let yt_ids = []
-        yt_urls.forEach(url => {
-            yt_ids.push(YouTubeGetID(url))
-        });
+        let source = new EventSource(url);
 
-        const url = "/download_all?urls_id=" + yt_ids.map(u => encodeURIComponent(u)).join(",");
 
-        const source = new EventSource(url);
-
-        source.onmessage = function (event) {
+        const handleMessage = (event) => {
             if (event.data === 'done') {
                 source.close();
                 $('#progress-bar').hide()
@@ -208,25 +245,59 @@ $('#download-all-mp3').click(function () {
                 $('#mysuccess').text("Downloaded All mp3 files")
 
             }
+            else if (JSON.parse(event.data).timeout === true) {
+
+                let current_id = JSON.parse(event.data).url_id
+                current_index = yt_ids.indexOf(current_id)
+
+                source.close()
+                console.error("SSE connection timed out,reconnecting");
+
+                crop_yt_urls = yt_urls.slice(current_index)
+                crop_yt_titles = yt_titles.slice(current_index)
+                crop_yt_ids = []
+                crop_yt_urls.forEach(url => {
+                    crop_yt_ids.push(YouTubeGetID(url))
+                });
+
+                let url = "/download_all?urls_id=" + crop_yt_ids.map(u => encodeURIComponent(u)).join(",");
+
+                setTimeout(() => {
+                    // Create a new connection with the same event listener
+                    const newSource = new EventSource(url);
+                    newSource.onmessage = handleMessage;
+                    newSource.onerror = source.onerror;
+                    source = newSource;
+                }, 1000);
+
+
+
+            }
             else {
+                let current_id2 = JSON.parse(event.data).url_id
+                current_index = yt_ids.indexOf(current_id2)
+
                 let data = JSON.parse(event.data)
-                let title = yt_titles[data.index_no]
+                let title = yt_titles[current_index]
+
+                current_percent = Math.round(((current_index + 1) / yt_ids.length) * 100)
 
                 $('#progress-bar').show()
-                $('#progress').css('width', data.percent + '%');
-                $('#progress-txt').text(data.percent)
-                $('#downloading-current').text(yt_titles[data.index_no + 1])
+                $('#progress').css('width', current_percent + '%');
+                $('#progress-txt').text(current_percent)
+                $('#downloading-current').text(yt_titles[current_index + 1])
                 downloadBase64AsMp3(data.audio_data, title);
 
 
             }
         };
+        source.onmessage = handleMessage
 
+
+        source.onmessage = handleMessage
         source.addEventListener('error', function (event) {
             source.close();
-            $('#progress-bar').hide()
-            $('#error').show()
-            $('#myerror').text("Something Went Wrong Some files were'nt downloaded")
+            console.error("event source ran into error", event)
         });
 
 

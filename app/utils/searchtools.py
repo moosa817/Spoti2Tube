@@ -82,7 +82,7 @@ class SpotifyAPI:
                 'by': item['track']['artists'][0]['name'],
                 'url': item['track']['external_urls']['spotify'],
                 'img': item['track']['album']['images'][1]['url'],
-                'type': 'Playlist',
+                'type': 'Track',
                 'length': 1
             } for item in results1]
             return results
@@ -97,7 +97,7 @@ class SpotifyAPI:
                 'by': item['artists'][0]['name'],
                 'url': item['external_urls']['spotify'],
                 'img': results1['images'][1]['url'],
-                'type': 'Album',
+                'type': 'Track',
                 'length': 1
             } for item in results]
             return results
