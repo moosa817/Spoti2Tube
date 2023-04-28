@@ -9,7 +9,7 @@ class Settings(BaseSettings):
     app_name: str = "Spoti2Tube"
     author: str = "Moosa (github.com/moosa817)"
     item_limiter: int = 200
-    timeout: int = 40
+    timeout: int = 500
 
     client_id: str = os.getenv("CLIENT_ID")
     client_secret: str = os.getenv("CLIENT_SECRET")
