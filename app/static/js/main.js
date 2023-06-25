@@ -62,7 +62,7 @@ $('#search_form').submit(function (e) {
             } else {
 
                 response.reverse().forEach(element => {
-                    if (tracks_name.includes(element.name)) {
+                    if (urls.includes(element.url)) {
                         $('#error').show();
                         $('#myerror').html("Already Added");
                     }
