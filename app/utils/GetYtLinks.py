@@ -25,13 +25,12 @@ def yt_search(search):
         "title": title,
         "thumbnail": thumbnail,
         "by": channel,
-        "type": "Youtube Video"
+        "type": "Youtube Video",
     }
 
 
 def search_for_short_videos(names):
-    with ProcessPoolExecutor() as executor:
-        results = list(executor.map(yt_search, names))
+    results = map(yt_search, names)
 
     if results is None:
         return []
