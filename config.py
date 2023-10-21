@@ -1,4 +1,4 @@
-from pydantic import BaseSettings
+from pydantic_settings import BaseSettings
 import os
 import random
 import string
@@ -24,13 +24,7 @@ class Settings(BaseSettings):
     mail_port: int = 587
     mail_user: str = os.getenv("MAIL_USER")
 
-    secret_key: str = os.getenv(
-        "SECRET_KEY", ''.join(
-            random.choice(string.ascii_letters + string.digits)
-            for _ in range(24)))
-
-    class Config:
-        env_file = ".env"
+    secret_key: str = os.getenv("SECRET_KEY")
 
 
 @lru_cache()
