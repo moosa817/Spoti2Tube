@@ -1,4 +1,3 @@
-from concurrent.futures import ProcessPoolExecutor
 from youtube_search import YoutubeSearch
 import json
 
@@ -32,10 +31,7 @@ def yt_search(search):
 def search_for_short_videos(names):
     results = map(yt_search, names)
 
-    if results is None:
-        return []
-
-    results = [i for i in results if i is not None]
+    results = [] if not results else [i for i in results if i is not None]
 
     return results
 

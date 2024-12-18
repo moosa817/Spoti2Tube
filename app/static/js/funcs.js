@@ -1,7 +1,7 @@
 function spotify_card(trackname, link, artist, type, img, length) {
 
     let content = `
-       <div class="spoti-card" data-length="${length}" data-name="${trackname}" data-type="${type}" data-artist="${artist}" data-url="${link}">
+       <div class="spoti-card" data-length="${length}" data-type="${type}" data-artist="${artist}" data-url="${link}">
 
             <div
                 class="dark:bg-gray-950 bg-gray-300 rounded-lg p-4 m-4 grid md:grid-flow-col md:grid-cols-3 grid-flow-row ">
@@ -12,7 +12,7 @@ function spotify_card(trackname, link, artist, type, img, length) {
                 <div class="flex items-center justify-between col-span-2 ">
                     <div class="mr-auto">
                         <div class="sm:text-[1rem] font-semibold ">
-                           <a href="${link}" target="_blank"> ${trackname} </a>
+                           <a href="${link}" target="_blank" class="track-name"> ${trackname} </a>
                         </div>
 
                         <div class=" text-[10px]  dark:text-gray-400 text-right">
@@ -28,7 +28,7 @@ function spotify_card(trackname, link, artist, type, img, length) {
                     </div>
 
                     <div class="ml-auto">
-                        <div class="my-2 add" data-url="${link}" data-type="${type}"  data="${trackname} ${artist}" data-length="${length}">
+                        <div class="my-2 add" data-url="${link}" data-type="${type}"  data="${link} ${artist}" data-length="${length}">
                             <button class="hover:scale-110 bg-green-400 p-1 rounded-lg "><i
                                     class="fa-solid fa-plus w-4"></i>
                                 </button>
@@ -46,7 +46,7 @@ function spotify_card(trackname, link, artist, type, img, length) {
 `
     $('#spotify-cards').prepend(content);
     if (type === 'Track') {
-        $(`[data-name="${trackname}"] .track-length`).hide()
+        $(`[data-url="${link}"] .track-length`).hide()
     }
 
 }

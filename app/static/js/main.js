@@ -30,6 +30,19 @@ let counter;
 let liked = false;
 
 
+const ResetTracks = () => {
+    console.log("well reseting apparently")
+    tracks_name = [];
+    all_artists = [];
+    types = [];
+    urls = [];
+    track_lengths = [];
+    crop_track_lengths = [];
+    crop_track_names = [];
+    crop_all_artists = [];
+    crop_types = [];
+    crop_urls = [];
+}
 
 
 
@@ -40,11 +53,7 @@ $('#search_form').submit(function (e) {
     let search_val = $('#search-dropdown').val(); //main search button input
     let type = $('#current_type').attr('data');
     let no = $('#no').val()
-    if (no === '#') {
-        no = 1
-    } else {
-        no = parseInt(no);
-    }
+    no = 1 ? no === '#' : parseInt(no);
 
     $('#loading-bar').show();
 
@@ -59,8 +68,9 @@ $('#search_form').submit(function (e) {
                 console.error("Found Nothing")
                 $('#error').show();
                 $('#myerror').html("Nothing Found");
-            } else {
-
+            }
+            else {
+                console.log(response)
                 response.reverse().forEach(element => {
                     if (tracks_name.includes(element.name)) {
                         $('#error').show();
@@ -85,6 +95,12 @@ $('#search_form').submit(function (e) {
                 $('#boxs').show()
             }
         },
+        error: function (error) {
+            console.error(error);
+            $('#error').show();
+            $('#myerror').html("Error Occured");
+            $('#loading-bar').fadeOut()
+        }
     });
 });
 
@@ -94,7 +110,7 @@ $('body').on('click', '.remove', function () {
 
     let spotiCard = $(this).closest('.spoti-card');
     spotiCard.remove();
-    let removeIndex = tracks_name.indexOf($(this).closest('.spoti-card').data('name'))
+    let removeIndex = urls.indexOf($(this).closest('.spoti-card').data('url'))
 
     tracks_name.splice(removeIndex, 1)
     all_artists.splice(removeIndex, 1)
@@ -230,6 +246,7 @@ $('#starting-index, #ending-index').on('change', function () {
 
 
 $('#removeAll').click(function () {
+    ResetTracks();
     $('.spoti-card').fadeOut()
     $('.spoti-card').remove()
 
@@ -247,7 +264,7 @@ $('#add-all').click(function () {
     $('.spoti-card').each(function () {
         a += 1
         let dataLength = $(this).data('length');
-        let name = $(this).data('name');
+        let name = $(this).find('.track-name').text();
         let type = $(this).data('type');
         let artist = $(this).data('artist');
         let url = $(this).data('url')

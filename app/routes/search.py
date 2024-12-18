@@ -20,31 +20,45 @@ class YtSearchItem(BaseModel):
 
 
 @search_app.post("/search")
-async def search(item: SearchItem, settings: Annotated[Settings,
-                                                       Depends(get_settings)]):
+async def search(
+    item: SearchItem, settings: Annotated[Settings, Depends(get_settings)]
+):
 
-    spotifyapi = SpotifyAPI(settings.client_id, settings.client_secret,
-                            item.no)
+    spotifyapi = SpotifyAPI(settings.client_id, settings.client_secret, item.no)
 
-    spotify_link_pattern = r'^(?:https?:\/\/)?(?:open\.|play\.|embed\.)?spotify\.com\/(track|album|artist|playlist)\/[a-zA-Z0-9]+(?:\?[a-zA-Z0-9_=&-]+)?$'
+    spotify_link_pattern = r"^(?:https?:\/\/)?(?:open\.|play\.|embed\.)?spotify\.com\/(track|album|artist|playlist)\/[a-zA-Z0-9]+(?:\?[a-zA-Z0-9_=&-]+)?$"
 
-    if re.match(spotify_link_pattern, item.search) and item.type == 'link':
-        return spotifyapi.get_with_link(link=item.search)
+    if re.match(spotify_link_pattern, item.search) and item.type == "link":
+        try:
+            return spotifyapi.get_with_link(link=item.search)
+        except Exception as e:
+            print(e)
+            raise HTTPException(403, "Error getting item")
     else:
-        if item.type == 'playlist':
-            return spotifyapi.get_playlist(item.search)
-        elif item.type == 'album':
-            return spotifyapi.get_album(item.search)
-        elif item.type == 'track':
-            return spotifyapi.get_tracks(item.search)
+        if item.type == "playlist":
+            try:
+                return spotifyapi.get_playlist(item.search)
+            except:
+                raise HTTPException(403, "Error getting playlist")
+        elif item.type == "album":
+            try:
+                return spotifyapi.get_album(item.search)
+            except:
+                raise HTTPException(403, "Error getting album")
+        elif item.type == "track":
+            try:
+                return spotifyapi.get_tracks(item.search)
+            except:
+                raise HTTPException(403, "Error getting track")
         else:
+
             raise HTTPException(403, "Error unspported type")
 
 
 @search_app.post("/search_yt")
-async def SearchYT(item: YtSearchItem,
-                   settings: Annotated[Settings,
-                                       Depends(get_settings)]):
+async def SearchYT(
+    item: YtSearchItem, settings: Annotated[Settings, Depends(get_settings)]
+):
     if len(item.search) > settings.item_limiter:
         return HTTPException(403, "tOO MANY ITEMS")
 
