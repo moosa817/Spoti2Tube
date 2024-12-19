@@ -31,7 +31,6 @@ let liked = false;
 
 
 const ResetTracks = () => {
-    console.log("well reseting apparently")
     tracks_name = [];
     all_artists = [];
     types = [];
@@ -70,7 +69,6 @@ $('#search_form').submit(function (e) {
                 $('#myerror').html("Nothing Found");
             }
             else {
-                console.log(response)
                 response.reverse().forEach(element => {
                     if (tracks_name.includes(element.name)) {
                         $('#error').show();
@@ -123,7 +121,7 @@ $('body').on('click', '.remove', function () {
 //add btn on spoti card
 $('body').on('click', '.add', function () {
 
-    let search_for = $(this).attr('data');
+    let search_for = $(this).find('.track').text();
     let type = $(this).attr('data-type');
     let url = $(this).attr('data-url');
     let item_length = $(this).attr('data-length');

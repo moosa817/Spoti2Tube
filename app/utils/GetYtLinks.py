@@ -3,6 +3,7 @@ import json
 
 
 def yt_search(search):
+    print(search)
     results = YoutubeSearch(search, max_results=1).to_json()
 
     results = json.loads(results)

@@ -29,6 +29,7 @@ function spotify_card(trackname, link, artist, type, img, length) {
 
                     <div class="ml-auto">
                         <div class="my-2 add" data-url="${link}" data-type="${type}"  data="${link} ${artist}" data-length="${length}">
+                            <span class="track hidden">${trackname}</span>
                             <button class="hover:scale-110 bg-green-400 p-1 rounded-lg "><i
                                     class="fa-solid fa-plus w-4"></i>
                                 </button>

@@ -1,14 +1,16 @@
-from pytube import YouTube
-from io import BytesIO
+from yt_dlp import YoutubeDL
+from contextlib import redirect_stdout
+from pathlib import Path
+import io
 
 
 def download_song(url):
-    yt = YouTube(url)
-    video = yt.streams.filter(only_audio=True).first()
+    youtube_id = url.split("=")[-1]
+    ctx = {"format": "bestaudio/best", "outtmpl": "-", "logtostderr": True}
 
-    if video.filesize_mb > 8:
-        return None
-    else:
-        audio_data = BytesIO()
-        video.stream_to_buffer(audio_data)
-        return audio_data.getvalue()
+    buffer = io.BytesIO()
+    with redirect_stdout(buffer), YoutubeDL(ctx) as foo:
+        foo.download([youtube_id])
+
+    # write out the buffer for demonstration purposes
+    return buffer.getvalue()
