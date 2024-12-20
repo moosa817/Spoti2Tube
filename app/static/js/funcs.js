@@ -4,13 +4,14 @@ function spotify_card(trackname, link, artist, type, img, length) {
        <div class="spoti-card" data-length="${length}" data-type="${type}" data-artist="${artist}" data-url="${link}">
 
             <div
-                class="dark:bg-gray-950 bg-gray-300 rounded-lg p-4 m-4 grid md:grid-flow-col md:grid-cols-3 grid-flow-row ">
-                <div class="custom-span">
+                class="dark:bg-gray-950 bg-gray-300 rounded-lg p-4 m-4 flex sm:flex-row flex-col justify-between ">
+                
+                
+                <div class="flex sm:flex-row flex-col">
                     <img class="inline-block h-20 rounded" src="${img}"></img>
-                </div>
+ 
 
-                <div class="flex items-center justify-between col-span-2 ">
-                    <div class="mr-auto">
+                        <div class="flex flex-col justify-around ml-4">
                         <div class="sm:text-[1rem] font-semibold ">
                            <a href="${link}" target="_blank" class="track-name"> ${trackname} </a>
                         </div>
@@ -24,23 +25,26 @@ function spotify_card(trackname, link, artist, type, img, length) {
                         <div class=" text-[10px]  dark:text-gray-400 text-right track-length">
                             Length: ${length} Tracks
                         </div>
+                        </div>
                 
-                    </div>
+                </div>
+            
+                   
 
-                    <div class="ml-auto">
-                        <div class="my-2 add" data-url="${link}" data-type="${type}"  data="${link} ${artist}" data-length="${length}">
+                    <div class="flex sm:block justify-center items-center">
+                        <div class="add" data-url="${link}" data-type="${type}"  data="${link} ${artist}" data-length="${length}">
                             <span class="track hidden">${trackname}</span>
-                            <button class="hover:scale-110 bg-green-400 p-1 rounded-lg "><i
+                            <button class="hover:scale-110 bg-green-400 p-1 rounded-lg my-1 mx-1"><i
                                     class="fa-solid fa-plus w-4"></i>
                                 </button>
                         </div>
-                        <div class="remove"> <button class="bg-red-600 rounded-[50%] w-6 h-6 hover:scale-110"
+                        <div class="remove"> <button class="bg-red-600 rounded-[50%] w-6 h-6 hover:scale-110 my-1 mx-1"
                                 style="border-radius:60%;"><i class=" fa-solid fa-minus "></i></button>
                         </div>
-
-
                     </div>
-                </div>
+
+
+               
             </div>
 
         </div>
@@ -157,6 +161,7 @@ function addYTCard(type, search_for, url, liked = false, from_single_file = fals
                         console.error("Found Nothing")
                         $('#error').show();
                         $('#myerror').html("Nothing Found");
+                        $('#loader').fadeOut()
                     }
                     else {
                         let counter = 0
@@ -188,6 +193,7 @@ function addYTCard(type, search_for, url, liked = false, from_single_file = fals
                             console.error("Found Nothing")
                             $('#error').show();
                             $('#myerror').html("Nothing Found");
+                            $('#loader').fadeOut()
                         }
                         else {
                             let track = response[0]

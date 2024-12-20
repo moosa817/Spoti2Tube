@@ -43,11 +43,7 @@
     }
 }
 
-@media screen and (max-width: 400px) {
-    .custom-span {
-        grid-column: span 2 / span 2;
-    }
-}
+
 
 
 .box {

@@ -84,7 +84,6 @@ class SpotifyAPI:
 
         elif "playlist" in link:
             results = self.sp.playlist(link)
-            print(results)
             results1 = results["tracks"]["items"]
             results = [
                 {

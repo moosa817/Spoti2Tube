@@ -32,7 +32,6 @@ async def search(
         try:
             return spotifyapi.get_with_link(link=item.search)
         except Exception as e:
-            print(e)
             raise HTTPException(403, "Error getting item")
     else:
         if item.type == "playlist":
@@ -64,4 +63,7 @@ async def SearchYT(
 
     # vid, title, thumbnail, by = yt_search(song)
     yt_info = search_for_short_videos(item.search)
+
+    if not yt_info:
+        return HTTPException(403, "No videos found")
     return yt_info
