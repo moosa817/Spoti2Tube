@@ -65,12 +65,15 @@ $('#search_form').submit(function (e) {
             $('#loading-bar').fadeOut()
             if (response === undefined || response.length == 0) {
                 console.error("Found Nothing")
+                $('#success').hide()
+
                 $('#error').show();
                 $('#myerror').html("Nothing Found");
             }
             else {
                 response.reverse().forEach(element => {
                     if (tracks_name.includes(element.name)) {
+                        $('#success').hide()
                         $('#error').show();
                         $('#myerror').html("Already Added");
                     }
@@ -95,6 +98,7 @@ $('#search_form').submit(function (e) {
         },
         error: function (error) {
             console.error(error);
+            $('#success').hide()
             $('#error').show();
             $('#myerror').html("Error Occured");
             $('#loading-bar').fadeOut()
@@ -121,7 +125,7 @@ $('body').on('click', '.remove', function () {
 //add btn on spoti card
 $('body').on('click', '.add', function () {
 
-    let search_for = $(this).find('.track').text();
+    let search_for = $(this).find('.track').text() + " " + $(this).find('.artist').text();
     let type = $(this).attr('data-type');
     let url = $(this).attr('data-url');
     let item_length = $(this).attr('data-length');
@@ -129,6 +133,7 @@ $('body').on('click', '.add', function () {
 
 
     if ($('.yt-card').length + item_length > item_limiter) {
+        $('#success').hide()
         $('#error').show();
         $('#myerror').html(`You can only add upto ${item_limiter} tracks at a time`);
     }
@@ -162,6 +167,7 @@ $('#add-all-main').click(function () {
 
 
     if ($('.yt-card').length + tracks_sum_int > item_limiter) {
+        $('#success').hide()
         $('#error').show();
         $('#myerror').html(`You can only add upto ${item_limiter} tracks at a time`);
     }

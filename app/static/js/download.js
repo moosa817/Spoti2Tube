@@ -112,6 +112,7 @@ $('#download-zip').click(function () {
 
 
     if (yt_urls.length < 1) {
+        $('#success').hide()
         $('#error').show()
         $('#myerror').text("Nothing To Download ! ")
     } else {
@@ -205,6 +206,8 @@ $('#download-zip').click(function () {
                     // Download the zip file
                     saveAs(content, "mp3_files.zip");
                     $('#progress-bar').hide()
+                    $('#success').hide()
+
                     $('#error').show()
                     $('#myerror').text("Something Went Wrong Some files were'nt downloaded")
 
@@ -224,6 +227,8 @@ $('#download-all-mp3').click(function () {
 
 
     if (yt_urls.length < 1) {
+        $('#success').hide()
+
         $('#error').show()
         $('#myerror').text("Nothing To Download ! ")
     } else {

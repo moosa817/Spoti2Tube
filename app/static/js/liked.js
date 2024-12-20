@@ -73,6 +73,8 @@ $('#liked_email').submit(function (e) {
                 }
             }
             else {
+                $('#success').hide()
+
                 $('#error').show();
                 $('#myerror').html("Unvalid Email Address");
             }

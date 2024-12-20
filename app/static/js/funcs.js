@@ -32,7 +32,8 @@ function spotify_card(trackname, link, artist, type, img, length) {
                    
 
                     <div class="flex sm:block justify-center items-center">
-                        <div class="add" data-url="${link}" data-type="${type}"  data="${link} ${artist}" data-length="${length}">
+                        <div class="add" data-url="${link}" data-type="${type}"  data-length="${length}">
+                            <span class="artist hidden">${artist}</span>
                             <span class="track hidden">${trackname}</span>
                             <button class="hover:scale-110 bg-green-400 p-1 rounded-lg my-1 mx-1"><i
                                     class="fa-solid fa-plus w-4"></i>
@@ -60,12 +61,12 @@ function spotify_card(trackname, link, artist, type, img, length) {
 function yt_card(link, ytname, artist, img, type, search_name) {
     let content = `<div class="yt-card" data-search="${search_name}">
             <div
-                class="dark:bg-gray-950 bg-gray-300 rounded-lg p-4 m-4 grid md:grid-flow-col md:grid-cols-3 grid-flow-row ">
-                <div class="custom-span">
+                class="dark:bg-gray-950 bg-gray-300 rounded-lg p-4 m-4 flex flex-col sm:flex-row justify-between items-items-center ">
+                <div class="block sm:flex">
                     <img class="inline-block h-20 rounded" src="${img}">
-                </div>
+           
 
-                <div class="flex items-center justify-between col-span-2">
+                <div class="flex items-center justify-between ml-2">
                     <div class="mr-auto">
                         <div class="text-[13px] font-semibold">
                         <a href="${link}" target="_blank" class='yt-link'>
@@ -82,7 +83,14 @@ function yt_card(link, ytname, artist, img, type, search_name) {
                         
                     </div>
 
-                    <div class="ml-auto">
+                    
+                </div>
+
+
+                
+            </div>
+
+            <div class="ml-auto flex sm:block justify-center items-center">
                         <div class="my-2 ">
                             <button data-url="${link}" data-title="${ytname}" class="download hover:scale-110 bg-green-400 p-1 rounded-lg "><svg class="h-6 text-white"
                                     viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -98,8 +106,6 @@ function yt_card(link, ytname, artist, img, type, search_name) {
                         </div>
 
                     </div>
-                </div>
-            </div>
         </div>
 
 `
@@ -110,6 +116,7 @@ function yt_card(link, ytname, artist, img, type, search_name) {
     }).get();
 
     if (hrefs.includes(link)) {
+        $('#success').hide()
 
         $('#error').show()
         $('#myerror').text("Already Added Skipping")
@@ -145,6 +152,8 @@ function AddModal(no, name, length) {
 // checks stuff and adds yt-card (not the card itself)
 function addYTCard(type, search_for, url, liked = false, from_single_file = false) {
     if (search_yt_items.includes(search_for)) {
+        $('#success').hide()
+
         $('#error').show();
         $('#myerror').text("Already Added");
     }
@@ -159,6 +168,8 @@ function addYTCard(type, search_for, url, liked = false, from_single_file = fals
                     $('#loader').fadeOut()
                     if (response === undefined || response.length == 0) {
                         console.error("Found Nothing")
+                        $('#success').hide()
+
                         $('#error').show();
                         $('#myerror').html("Nothing Found");
                         $('#loader').fadeOut()
@@ -170,6 +181,13 @@ function addYTCard(type, search_for, url, liked = false, from_single_file = fals
                             yt_card(track.link, track.title, track.by, track.thumbnail, track.type, search_for[counter])
                         })
                     }
+                },
+                error: function (response) {
+                    $('#success').hide()
+
+                    $('#error').show();
+                    $('#myerror').html("Video is Too Long or Some Error Occured");
+                    $('#loader').fadeOut()
                 }
             })
 
@@ -191,6 +209,8 @@ function addYTCard(type, search_for, url, liked = false, from_single_file = fals
                     success: function (response) {
                         if (response === undefined || response.length == 0) {
                             console.error("Found Nothing")
+                            $('#success').hide()
+
                             $('#error').show();
                             $('#myerror').html("Nothing Found");
                             $('#loader').fadeOut()
@@ -213,6 +233,13 @@ function addYTCard(type, search_for, url, liked = false, from_single_file = fals
                             $('#mysuccess').text("Added Tracks")
 
                         }
+                    },
+                    error: function (response) {
+                        $('#success').hide()
+
+                        $('#error').show();
+                        $('#myerror').html("Video is Too Long or Some Error Occured");
+                        $('#loader').fadeOut()
                     }
 
                 })
@@ -231,6 +258,8 @@ function addYTCard(type, search_for, url, liked = false, from_single_file = fals
                         success: function (response) {
                             if (response === undefined || response.length == 0) {
                                 console.error("Found Nothing")
+                                $('#success').hide()
+
                                 $('#error').show();
                                 $('#myerror').html("Nothing Found");
                             } else {
@@ -251,6 +280,8 @@ function addYTCard(type, search_for, url, liked = false, from_single_file = fals
 
                                         if (response === undefined || response.length == 0) {
                                             console.error("Found Nothing")
+                                            $('#success').hide()
+
                                             $('#error').show();
                                             $('#myerror').html("Nothing Found");
                                         }

@@ -63,7 +63,7 @@ async def SearchYT(
 
     # vid, title, thumbnail, by = yt_search(song)
     yt_info = search_for_short_videos(item.search)
-
+    print(yt_info)
     if not yt_info:
-        return HTTPException(403, "No videos found")
+        raise HTTPException(403, "Video is too long")
     return yt_info
