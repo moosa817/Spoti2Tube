@@ -3,7 +3,6 @@ import json
 
 
 def yt_search(search):
-    print("here")
     results = YoutubeSearch(search, max_results=1).to_json()
 
     results = json.loads(results)
@@ -20,8 +19,6 @@ def yt_search(search):
     if int(minutes) >= 8:
         return None
 
-    print(results)
-    print(url)
     return {
         "link": url,
         "title": title,
@@ -33,7 +30,6 @@ def yt_search(search):
 
 def search_for_short_videos(names):
     results = list(map(yt_search, names))
-    print(results, names)
     results = [] if not results else [i for i in results if i is not None]
 
     return results
